@@ -9,8 +9,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { usePodcasts } from "@/hooks/use-podcasts"
-import { AnimatePresence, motion } from "framer-motion"
 import { Clock, Play, RefreshCw } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
 import { useRouter } from "next/navigation"
 
 const container = {

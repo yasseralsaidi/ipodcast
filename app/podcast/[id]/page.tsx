@@ -3,8 +3,8 @@
 import { type iTunesPodcast, searchPodcasts } from "@/app/server/services/itunes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { motion } from "framer-motion"
 import { Heart, Play, Share2 } from "lucide-react"
+import { motion } from "motion/react"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
