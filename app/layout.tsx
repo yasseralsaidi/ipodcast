@@ -1,4 +1,8 @@
+import { AuthProvider } from '@/components/auth/auth-provider'
+import { RootLayoutContent } from '@/components/root-layout-content'
 import { ThemeProvider } from '@/components/theme-provider'
+import SonnerToaster from '@/components/ui/sonner'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { IBM_Plex_Sans_Arabic } from 'next/font/google'
 import './globals.css'
@@ -22,14 +26,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body className={`min-h-screen font-sans antialiased ${ibmPlexSansArabic.className}`}>
+      <body className={cn("min-h-screen font-ibm-plex-sans-arabic antialiased", ibmPlexSansArabic.className)}>
         <ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TRPCReactProvider>
+            <AuthProvider>
+              <RootLayoutContent>
+                {children}
+              </RootLayoutContent>
+            </AuthProvider>
+          </TRPCReactProvider>
+          <SonnerToaster />
         </ThemeProvider>
       </body>
     </html>

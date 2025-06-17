@@ -1,25 +1,28 @@
 "use client"
 
+import { useAuth } from "@/components/auth/auth-provider"
+import { UserAccountNav } from "@/components/auth/user-account-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ChevronLeft, ChevronRight, MoreHorizontal, Search } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import Link from "next/link"
 import type React from "react"
 import { useState } from "react"
 
 interface HeaderProps {
-  onSearch?: (searchTerm: string) => void
+  onSearch?: (term: string) => void
   searchTerm?: string
 }
 
 export function Header({ onSearch, searchTerm }: HeaderProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || "")
+  const { user, isLoading } = useAuth()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (localSearchTerm.trim() && onSearch) {
-      onSearch(localSearchTerm.trim())
-    }
+    onSearch?.(localSearchTerm)
   }
 
   return (
@@ -50,16 +53,18 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
 
       {/* Auth Buttons */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
-          تسجيل الدخول
-        </Button>
-        <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-          إنشاء حساب
-        </Button>
+        
         <ThemeToggle />
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
-          <MoreHorizontal className="w-5 h-5" />
-        </Button>
+        {isLoading ? (
+          <Skeleton className="h-9 w-20" />
+        ) : 
+        user ? (
+          <UserAccountNav />
+        ) : (
+          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+            <Link href="/auth">تسجيل الدخول</Link>
+          </Button>
+        )}
       </div>
     </header>
   )
