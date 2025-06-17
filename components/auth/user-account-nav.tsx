@@ -40,7 +40,7 @@ export function UserAccountNav() {
            
           </Avatar>
           <div className="flex flex-col items-start">
-            <span className="text-sm font-semibold truncate ml-2">
+            <span className="text-sm font-semibold text-foreground truncate ml-2">
               {user.name}
             </span>
             {/* <span className="text-xs text-muted-foreground truncate max-w-[120px]">
@@ -94,8 +94,8 @@ export function UserAccountNav() {
               href="/profile" 
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <div className="flex items-center justify-center size-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                <User className="size-4 text-blue-600 dark:text-blue-400" />
+              <div className="flex items-center justify-center size-8 bg-primary/10 rounded-lg">
+                <User className="size-4 text-primary" />
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">الملف الشخصي</span>
@@ -109,8 +109,8 @@ export function UserAccountNav() {
               href="/settings" 
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <div className="flex items-center justify-center size-8 bg-gray-100 dark:bg-gray-900/20 rounded-lg">
-                <Settings className="size-4 text-gray-600 dark:text-gray-400" />
+              <div className="flex items-center justify-center size-8 bg-muted rounded-lg">
+                <Settings className="size-4 text-muted-foreground" />
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">الإعدادات</span>
@@ -124,9 +124,9 @@ export function UserAccountNav() {
               href="/notifications" 
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <div className="flex items-center justify-center size-8 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg relative">
-                <Bell className="size-4 text-yellow-600 dark:text-yellow-400" />
-                <div className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full" />
+              <div className="flex items-center justify-center size-8 bg-destructive/10 rounded-lg relative">
+                <Bell className="size-4 text-destructive" />
+                <div className="absolute -top-1 -right-1 size-2 bg-destructive rounded-full" />
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">الإشعارات</span>
@@ -140,8 +140,8 @@ export function UserAccountNav() {
               href="/security" 
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors"
             >
-              <div className="flex items-center justify-center size-8 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                <Shield className="size-4 text-green-600 dark:text-green-400" />
+              <div className="flex items-center justify-center size-8 bg-success/10 rounded-lg">
+                <Shield className="size-4 text-success" />
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">الأمان</span>
@@ -154,12 +154,12 @@ export function UserAccountNav() {
         <DropdownMenuSeparator className="my-2" />
         
         <DropdownMenuItem
-          className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/10 px-3 py-2.5 rounded-lg transition-colors"
+          className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10 px-3 py-2.5 rounded-lg transition-colors"
           onClick={() => signOut()}
         >
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center size-8 bg-red-100 dark:bg-red-900/20 rounded-lg">
-              <LogOut className="size-4 text-red-600 dark:text-red-400" />
+            <div className="flex items-center justify-center size-8 bg-destructive/10 rounded-lg">
+              <LogOut className="size-4 text-destructive" />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-medium">تسجيل الخروج</span>

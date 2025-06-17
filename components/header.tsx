@@ -29,11 +29,13 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
     <header className="bg-background border-b h-16 flex items-center justify-between px-6 fixed top-0 right-64 left-0 z-10">
       {/* Navigation Arrows */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
           <ChevronRight className="w-5 h-5" />
+          <span className="sr-only">السابق</span>
         </Button>
-        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
           <ChevronLeft className="w-5 h-5" />
+          <span className="sr-only">التالي</span>
         </Button>
       </div>
 
@@ -53,12 +55,10 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
 
       {/* Auth Buttons */}
       <div className="flex items-center gap-3">
-        
         <ThemeToggle />
         {isLoading ? (
           <Skeleton className="h-9 w-20" />
-        ) : 
-        user ? (
+        ) : user ? (
           <UserAccountNav />
         ) : (
           <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">

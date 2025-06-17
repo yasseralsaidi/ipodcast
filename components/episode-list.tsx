@@ -13,9 +13,9 @@ export function EpisodeList({ episodes }: EpisodeListProps) {
       {episodes.map((episode) => (
         <div
           key={episode.id}
-          className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors group"
+          className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
         >
-          <div className="relative w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-gray-800">
+          <div className="relative w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-muted">
             <Image
               src={episode.artworkUrl100 || "/placeholder.svg?height=48&width=48"}
               alt={episode.collectionName || episode.trackName}
@@ -24,15 +24,15 @@ export function EpisodeList({ episodes }: EpisodeListProps) {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="text-white text-sm font-medium line-clamp-1 mb-1">
+            <h4 className="text-foreground text-sm font-medium line-clamp-1 mb-1">
               {episode.collectionName || episode.trackName}
             </h4>
-            <p className="text-gray-400 text-xs line-clamp-1">{episode.artistName}</p>
+            <p className="text-muted-foreground text-xs line-clamp-1">{episode.artistName}</p>
           </div>
           <Button
             variant="ghost"
             size="sm"
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-white hover:bg-gray-700"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground hover:bg-muted"
           >
             <MoreHorizontal className="w-4 h-4" />
           </Button>

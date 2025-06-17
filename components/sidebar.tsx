@@ -23,8 +23,11 @@ export function Sidebar() {
     <div className="w-64 bg-background h-screen fixed right-0 top-0 border-l flex flex-col">
       {/* Logo */}
       <div className="p-6">
-        <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
-          <div className="w-6 h-6 bg-white rounded-sm opacity-90" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+            <div className="w-6 h-6 bg-background rounded-sm" />
+          </div>
+          <span className="text-xl font-semibold text-foreground">iPodcast</span>
         </div>
       </div>
 
