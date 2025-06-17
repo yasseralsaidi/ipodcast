@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model SearchRecord {
+    id         String          @id @default(cuid())
+    searchTerm String
+    createdAt  DateTime        @default(now())
+    updatedAt  DateTime        @updatedAt
+    results    PodcastResult[]
+
+    @@index([searchTerm])
+    @@index([createdAt])
+    @@map("search_records")
+}
+
+model PodcastResult {
+    id                     String       @id @default(cuid())
+    collectionId           Int
+    trackId                Int
+    artistName             String
+    collectionName         String
+    trackName              String
+    collectionViewUrl      String
+    feedUrl                String
+    artworkUrl30           String
+    artworkUrl60           String
+    artworkUrl100          String
+    collectionPrice        Float
+    trackPrice             Float
+    releaseDate            String
+    collectionExplicitness String
+    trackExplicitness      String
+    trackCount             Int
+    trackTimeMillis        Int
+    country                String
+    currency               String
+    primaryGenreName       String
+    contentAdvisoryRating  String
+    artworkUrl600          String
+    genreIds               String[]
+    genres                 String[]
+    searchTerm             String
+    createdAt              DateTime     @default(now())
+    searchRecord           SearchRecord @relation(fields: [searchRecordId], references: [id], onDelete: Cascade)
+    searchRecordId         String
+
+    @@index([searchTerm])
+    @@index([createdAt])
+    @@index([collectionId])
+    @@index([trackId])
+    @@map("podcast_results")
+}

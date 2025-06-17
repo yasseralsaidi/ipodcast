@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Package Management
+
+This project uses pnpm as the primary package manager. Always use pnpm for any package-related operations.
+
+## Key Rules
+
+1. Always use pnpm instead of npm or yarn for all package operations
+2. Use the exact command mappings below:
+   - `pnpm install` for installing all dependencies
+   - `pnpm add <package>` for adding new dependencies
+   - `pnpm add -D <package>` for adding dev dependencies
+   - `pnpm remove <package>` for removing dependencies
+   - `pnpm update` for updating dependencies
+   - `pnpm run <script>` for running scripts defined in package.json
+
+## Why pnpm?
+
+- Efficient disk space usage through content-addressable storage
+- Strict dependency management preventing phantom dependencies
+- Faster installation times
+- Built-in monorepo support
+- Consistent dependency resolution
+
+## CI/CD
+
+- All CI/CD pipelines should use pnpm
+- The pnpm-lock.yaml file must always be committed
+- Never modify the pnpm-lock.yaml file manually
