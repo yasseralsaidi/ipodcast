@@ -1,3 +1,4 @@
+import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,24 +9,48 @@ import { toast } from "sonner";
 
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("user@mail.com");
+  const [password, setPassword] = useState("ipassword");
   const router = useRouter();
+  const { refreshSession } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await authClient.signIn.email({
+      const response = await authClient.signIn.email({
         email,
         password,
       });
+      
+      if ('error' in response && response.error?.message) {
+        if (response.error.message.includes('Invalid password')) {
+          toast.error("كلمة المرور غير صحيحة");
+        } else if (response.error.message.includes('User not found')) {
+          toast.error("البريد الإلكتروني غير مسجل");
+        } else {
+          toast.error("بيانات الدخول غير صحيحة");
+        }
+        return;
+      }
+
+      await refreshSession();
       toast.success("تم تسجيل الدخول بنجاح");
       router.refresh();
       router.push("/");
     } catch (err) {
-      toast.error("فشل تسجيل الدخول");
+      if (err instanceof Error) {
+        if (err.message.includes('Invalid password')) {
+          toast.error("كلمة المرور غير صحيحة");
+        } else if (err.message.includes('User not found')) {
+          toast.error("البريد الإلكتروني غير مسجل");
+        } else {
+          toast.error("بيانات الدخول غير صحيحة");
+        }
+      } else {
+        toast.error("بيانات الدخول غير صحيحة");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,22 +15,41 @@ export function SignUpForm() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { refreshSession } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await authClient.signUp.email({
+      const response = await authClient.signUp.email({
         email,
         name,
         password,
       });
+
+      if ('error' in response && response.error?.message) {
+        if (response.error.message.includes('existing email')) {
+          toast.error("البريد الإلكتروني مسجل مسبقاً");
+        } else {
+          toast.error("فشل إنشاء الحساب");
+        }
+        return;
+      }
+
+      // Refresh the session to update auth state
+      await refreshSession();
       toast.success("تم إنشاء الحساب بنجاح");
       router.refresh();
       router.push("/");
     } catch (err) {
-      toast.error("فشل إنشاء الحساب");
+      const errorMessage = err instanceof Error ? err.message : "فشل إنشاء الحساب";
+      if (errorMessage.includes('existing email')) {
+        toast.error("البريد الإلكتروني مسجل مسبقاً");
+      } else {
+        toast.error("فشل إنشاء الحساب");
+      }
+      return;
     } finally {
       setIsLoading(false);
     }

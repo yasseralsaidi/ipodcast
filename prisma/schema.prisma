@@ -40,11 +40,11 @@ model PodcastResult {
     collectionExplicitness String
     trackExplicitness      String
     trackCount             Int
-    trackTimeMillis        Int
+    trackTimeMillis        Int?
     country                String
     currency               String
     primaryGenreName       String
-    contentAdvisoryRating  String
+    contentAdvisoryRating  String?
     artworkUrl600          String
     genreIds               String[]
     genres                 String[]

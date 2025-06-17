@@ -20,10 +20,7 @@ export default function SearchPage() {
 
   const searchQuery = api.podcast.search.useMutation({
     onSuccess: (data) => {
-      setSearchResults(data.data.map(result => ({
-        ...result,
-        createdAt: new Date(result.createdAt).toISOString()
-      })))
+      setSearchResults(data.data as PodcastResult[])
     }
   })
 

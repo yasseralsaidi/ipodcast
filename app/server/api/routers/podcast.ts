@@ -21,11 +21,11 @@ const iTunesPodcastSchema = z.object({
   collectionExplicitness: z.string(),
   trackExplicitness: z.string(),
   trackCount: z.number(),
-  trackTimeMillis: z.number(),
+  trackTimeMillis: z.number().optional(),
   country: z.string(),
   currency: z.string(),
   primaryGenreName: z.string(),
-  contentAdvisoryRating: z.string(),
+  contentAdvisoryRating: z.string().optional(),
   artworkUrl600: z.string(),
   genreIds: z.array(z.string()),
   genres: z.array(z.string()),
@@ -44,53 +44,69 @@ export const podcastRouter = createTRPCRouter({
         // Fetch from iTunes API using the service
         const validatedData = await searchPodcasts(input.term);
 
-        // Create search record
-        const searchRecord = await db.searchRecord.create({
-          data: {
-            searchTerm: input.term,
-          },
-        });
+        try {
+          // Create search record
+          const searchRecord = await db.searchRecord.create({
+            data: {
+              searchTerm: input.term,
+            },
+          });
 
-        // Store podcast results
-        const podcastResults = await Promise.all(
-          validatedData.results.map((result) =>
-            db.podcastResult.create({
-              data: {
-                collectionId: result.collectionId,
-                trackId: result.trackId,
-                artistName: result.artistName,
-                collectionName: result.collectionName,
-                trackName: result.trackName,
-                collectionViewUrl: result.collectionViewUrl,
-                feedUrl: result.feedUrl,
-                artworkUrl30: result.artworkUrl30,
-                artworkUrl60: result.artworkUrl60,
-                artworkUrl100: result.artworkUrl100,
-                collectionPrice: result.collectionPrice,
-                trackPrice: result.trackPrice,
-                releaseDate: result.releaseDate,
-                collectionExplicitness: result.collectionExplicitness,
-                trackExplicitness: result.trackExplicitness,
-                trackCount: result.trackCount,
-                trackTimeMillis: result.trackTimeMillis,
-                country: result.country,
-                currency: result.currency,
-                primaryGenreName: result.primaryGenreName,
-                contentAdvisoryRating: result.contentAdvisoryRating,
-                artworkUrl600: result.artworkUrl600,
-                genreIds: result.genreIds,
-                genres: result.genres,
-                searchTerm: input.term,
-                searchRecordId: searchRecord.id,
-              },
-            }),
-          ),
-        );
+          // Store podcast results
+          const podcastResults = await Promise.all(
+            validatedData.results.map((result) =>
+              db.podcastResult.create({
+                data: {
+                  collectionId: result.collectionId,
+                  trackId: result.trackId,
+                  artistName: result.artistName,
+                  collectionName: result.collectionName,
+                  trackName: result.trackName,
+                  collectionViewUrl: result.collectionViewUrl,
+                  feedUrl: result.feedUrl,
+                  artworkUrl30: result.artworkUrl30,
+                  artworkUrl60: result.artworkUrl60,
+                  artworkUrl100: result.artworkUrl100,
+                  collectionPrice: result.collectionPrice,
+                  trackPrice: result.trackPrice,
+                  releaseDate: result.releaseDate,
+                  collectionExplicitness: result.collectionExplicitness,
+                  trackExplicitness: result.trackExplicitness,
+                  trackCount: result.trackCount,
+                  trackTimeMillis: result.trackTimeMillis ?? 0,
+                  country: result.country,
+                  currency: result.currency,
+                  primaryGenreName: result.primaryGenreName,
+                  contentAdvisoryRating: result.contentAdvisoryRating ?? "",
+                  artworkUrl600: result.artworkUrl600,
+                  genreIds: result.genreIds,
+                  genres: result.genres,
+                  searchTerm: input.term,
+                  searchRecordId: searchRecord.id,
+                },
+              }),
+            ),
+          );
 
-        return {
-          success: true,
-          data: podcastResults,
-        };
+          return {
+            success: true,
+            data: podcastResults,
+          };
+        } catch (dbError) {
+          console.error("Database error:", dbError);
+          // If database operations fail, still return the iTunes API results
+          // but transform them to match the PodcastResult type
+          return {
+            success: true,
+            data: validatedData.results.map(result => ({
+              id: `temp-${result.collectionId}`,
+              searchTerm: input.term,
+              searchRecordId: 'temp',
+              ...result,
+              createdAt: new Date().toISOString()
+            }))
+          };
+        }
       } catch (error) {
         console.error("Error searching podcasts:", error);
         throw new Error("Failed to search podcasts");
@@ -98,16 +114,21 @@ export const podcastRouter = createTRPCRouter({
     }),
 
   getRecentSearches: publicProcedure.query(async () => {
-    const recentSearches = await db.searchRecord.findMany({
-      take: 10,
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        results: true,
-      },
-    });
+    try {
+      const recentSearches = await db.searchRecord.findMany({
+        take: 10,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          results: true,
+        },
+      });
 
-    return recentSearches;
+      return recentSearches;
+    } catch (error) {
+      console.error("Error fetching recent searches:", error);
+      return [];
+    }
   }),
 });

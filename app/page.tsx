@@ -1,6 +1,7 @@
 "use client"
 
 import { Header } from "@/components/header"
+import { PodcastSection } from "@/components/podcast-section"
 import { Sidebar } from "@/components/sidebar"
 import { useRouter } from "next/navigation"
 
@@ -41,6 +42,9 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+
+          {/* Featured Podcasts Section */}
+          <PodcastSection />
         </div>
       </main>
     </div>

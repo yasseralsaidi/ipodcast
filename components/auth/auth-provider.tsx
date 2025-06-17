@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 interface User {
   id: string;
@@ -18,6 +18,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,24 +28,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const session = await authClient.getSession();
-        if ('data' in session && session.data) {
-          setUser(session.data.user);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
+  const refreshSession = useCallback(async () => {
+    try {
+      const session = await authClient.getSession();
+      if ('data' in session && session.data) {
+        setUser(session.data.user);
+      } else {
         setUser(null);
-      } finally {
-        setIsLoading(false);
       }
-    };
-
-    checkAuth();
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    refreshSession();
+  }, [refreshSession]);
 
   const signOut = async () => {
     try {
@@ -57,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signOut, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );
