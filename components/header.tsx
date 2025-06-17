@@ -1,11 +1,11 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { Search, ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ChevronLeft, ChevronRight, MoreHorizontal, Search } from "lucide-react"
+import type React from "react"
+import { useState } from "react"
 
 interface HeaderProps {
   onSearch?: (searchTerm: string) => void
@@ -23,40 +23,41 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
   }
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800 h-16 flex items-center justify-between px-6 fixed top-0 left-64 right-0 z-10">
+    <header className="bg-background border-b h-16 flex items-center justify-between px-6 fixed top-0 right-64 left-0 z-10">
       {/* Navigation Arrows */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800">
-          <ChevronLeft className="w-5 h-5" />
-        </Button>
-        <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800">
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
           <ChevronRight className="w-5 h-5" />
+        </Button>
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+          <ChevronLeft className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Search Bar */}
       <div className="flex-1 max-w-2xl mx-8">
         <form onSubmit={handleSubmit} className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input
             type="text"
-            placeholder="Search through over 70 million podcasts and episodes..."
+            placeholder="ابحث في أكثر من 70 مليون بودكاست وحلقة..."
             value={localSearchTerm}
             onChange={(e) => setLocalSearchTerm(e.target.value)}
-            className="w-full bg-gray-800 border-gray-700 text-white placeholder-gray-400 pl-12 pr-4 py-2 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full bg-background border-input text-foreground placeholder-muted-foreground pr-12 pl-4 py-2 rounded-full focus:ring-2 focus:ring-ring focus:border-transparent"
           />
         </form>
       </div>
 
       {/* Auth Buttons */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white hover:bg-gray-800">
-          Log in
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+          تسجيل الدخول
         </Button>
-        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-          Sign up
+        <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          إنشاء حساب
         </Button>
-        <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-gray-800">
+        <ThemeToggle />
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
           <MoreHorizontal className="w-5 h-5" />
         </Button>
       </div>

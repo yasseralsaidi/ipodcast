@@ -1,7 +1,14 @@
+import { ThemeProvider } from '@/components/theme-provider'
 import type { Metadata } from 'next'
+import { IBM_Plex_Sans_Arabic } from 'next/font/google'
 import './globals.css'
 import { TRPCReactProvider } from './trpc/react'
 
+const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({ 
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'iPodcast Search',
@@ -14,9 +21,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body >
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <body className={`min-h-screen font-sans antialiased ${ibmPlexSansArabic.className}`}>
+        <ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+				>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
