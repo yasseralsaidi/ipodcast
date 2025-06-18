@@ -65,7 +65,7 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
       
       {/* Main content */}
       <div className={`
-        flex flex-col flex-1
+        flex flex-col flex-1 md:mr-32
       `}>
         <Header 
           onSearch={handleSearch} 
@@ -73,7 +73,7 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
           isMobile={isMobile}
         />
         <main className={`
-          flex-1 pt-16
+          flex-1 pt-16 md:mr-32
         `}>
           <div className="container mx-auto px-4 py-6">
             {children}
