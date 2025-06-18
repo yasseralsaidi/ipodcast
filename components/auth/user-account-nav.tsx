@@ -64,8 +64,7 @@ export function UserAccountNav() {
                   size={48}
                   name={user.name}
                   variant="marble"
-                  colors={["#92A1C6", "#146A7C", "#C271B4", "#C20D90"]}
-                />
+                  colors={["#C271B4","#FFD700"]}                />
               </Avatar>
             </div>
             <div className="flex flex-col min-w-0 flex-1">

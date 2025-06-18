@@ -122,8 +122,7 @@ export default function ProfilePage() {
                       size={128}
                       name={profileData.name}
                       variant="marble"
-                      colors={["#92A1C6", "#146A7C", "#C271B4", "#C20D90"]}
-                    />
+                      colors={["#C271B4","#FFD700"]}                    />
                   </Avatar>
                   {isEditing && (
                     <Button
