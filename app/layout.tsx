@@ -3,6 +3,7 @@ import { RootLayoutContent } from '@/components/root-layout-content'
 import { ThemeProvider } from '@/components/theme-provider'
 import SonnerToaster from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import type { Metadata } from 'next'
 import { IBM_Plex_Sans_Arabic } from 'next/font/google'
 import './globals.css'
@@ -26,22 +27,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body className={cn("min-h-screen font-ibm-plex-sans-arabic antialiased", ibmPlexSansArabic.className)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <TRPCReactProvider>
+      <body className={cn(
+        "min-h-screen bg-background font-sans antialiased",
+        ibmPlexSansArabic.className
+      )}>
+        <TRPCReactProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <AuthProvider>
               <RootLayoutContent>
                 {children}
               </RootLayoutContent>
+              <SonnerToaster />
+              {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
             </AuthProvider>
-          </TRPCReactProvider>
-          <SonnerToaster />
-        </ThemeProvider>
+          </ThemeProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   )

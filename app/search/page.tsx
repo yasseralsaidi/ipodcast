@@ -6,27 +6,26 @@ import { Header } from "@/components/header"
 import { PodcastCard } from "@/components/podcast-card"
 import { Sidebar } from "@/components/sidebar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { createRetryConfig } from "@/hooks/use-podcasts"
 import type { PodcastResult } from "@/lib/types"
-import { MoreHorizontal } from "lucide-react"
+import { AlertCircle, RefreshCw } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function SearchPage() {
   const [currentSearchTerm, setCurrentSearchTerm] = useState("")
-  const [searchResults, setSearchResults] = useState<PodcastResult[]>([])
   const searchParams = useSearchParams()
   const router = useRouter()
   const initialQuery = searchParams.get("q")
 
-  const searchQuery = api.podcast.search.useMutation({
-    onSuccess: (data) => {
-      setSearchResults(data.data as PodcastResult[])
-    }
+  const searchMutation = api.podcast.search.useMutation({
+    ...createRetryConfig(2),
+    retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 10000),
   })
 
   const searchHistoryQuery = api.podcast.getRecentSearches.useQuery(undefined, {
     staleTime: 1000 * 60 * 5, // 5 minutes
+    ...createRetryConfig(2),
   })
 
   useEffect(() => {
@@ -38,12 +37,18 @@ export default function SearchPage() {
   const handleSearch = async (searchTerm: string) => {
     setCurrentSearchTerm(searchTerm)
     router.push(`/search?q=${encodeURIComponent(searchTerm)}`)
-    await searchQuery.mutateAsync({ term: searchTerm })
+    await searchMutation.mutateAsync({ term: searchTerm })
   }
 
-  const isLoading = searchQuery.isPending
-  const error = searchQuery.error
-  const results = searchResults
+  const handleRetry = () => {
+    if (currentSearchTerm) {
+      searchMutation.mutate({ term: currentSearchTerm })
+    }
+  }
+
+  const isLoading = searchMutation.isPending
+  const error = searchMutation.error
+  const results = searchMutation.data?.data as PodcastResult[] || []
 
   // Split results into podcasts (first 5) and episodes (rest)
   const topPodcasts = results.slice(0, 5)
@@ -83,7 +88,29 @@ export default function SearchPage() {
             </div>
           ) : error ? (
             <div className="text-center py-12">
-              <p className="text-destructive text-lg">{error.message}</p>
+              <div className="flex flex-col items-center gap-4">
+                <AlertCircle className="w-12 h-12 text-destructive" />
+                <div>
+                  <p className="text-destructive text-lg font-semibold mb-2">
+                    {error.message || "Failed to fetch data from iTunes API"}
+                  </p>
+                  <p className="text-muted-foreground mb-4">
+                    Please check your internet connection and try again.
+                  </p>
+                  <Button 
+                    onClick={handleRetry}
+                    disabled={searchMutation.isPending}
+                    className="flex items-center gap-2"
+                  >
+                    {searchMutation.isPending ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="w-4 h-4" />
+                    )}
+                    Try Again
+                  </Button>
+                </div>
+              </div>
             </div>
           ) : results.length === 0 ? (
             <div className="text-center py-12">
@@ -98,42 +125,20 @@ export default function SearchPage() {
                 <section>
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold">أفضل البودكاست لـ {currentSearchTerm}</h2>
-                    {/* <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="sm">
-                        <ChevronLeft className="w-5 h-5" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <ChevronRight className="w-5 h-5" />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="w-5 h-5" />
-                      </Button>
-                    </div> */}
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-5 gap-4">
                     {topPodcasts.map((podcast) => (
-                      <Card key={podcast.id} className="bg-card border-border">
-                        <CardHeader>
-                          <CardTitle className="text-lg font-semibold">{podcast.collectionName || podcast.trackName}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <PodcastCard podcast={podcast} />
-                        </CardContent>
-                      </Card>
+                      <PodcastCard key={podcast.id} podcast={podcast} />
                     ))}
                   </div>
                 </section>
               )}
 
-
-              {/* Top Episodes Section */}
+              {/* Episodes Section */}
               {episodes.length > 0 && (
                 <section>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold">أفضل الحلقات لـ {currentSearchTerm}</h2>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="w-5 h-5" />
-                    </Button>
+                    <h2 className="text-2xl font-bold">الحلقات</h2>
                   </div>
                   <EpisodeList episodes={episodes} />
                 </section>

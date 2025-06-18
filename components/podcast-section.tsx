@@ -30,10 +30,18 @@ const item = {
 
 export function PodcastSection() {
   const router = useRouter()
-  const { podcasts, loading, error, refetch } = usePodcasts()
+  const { podcasts, loading, error, refetch, isRefetching } = usePodcasts()
 
   const handlePodcastClick = (podcastId: number) => {
     router.push(`/podcast/${podcastId}`)
+  }
+
+  const handleRefresh = async () => {
+    try {
+      await refetch()
+    } catch (error) {
+      console.error('Failed to refresh podcasts:', error)
+    }
   }
 
   if (loading && podcasts.length === 0) {
@@ -60,7 +68,7 @@ export function PodcastSection() {
             </h2>
             <Button 
               variant="outline" 
-              onClick={refetch}
+              onClick={handleRefresh}
               className="mt-4"
             >
               حاول مرة أخرى
@@ -89,15 +97,19 @@ export function PodcastSection() {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={refetch}
+                    onClick={handleRefresh}
                     className="h-10 w-10 absolute right-0"
-                    disabled={loading}
+                    disabled={isRefetching}
                   >
                     <motion.div
-                      animate={loading ? { rotate: 360 } : {}}
+                      animate={isRefetching ? { rotate: 360 } : {}}
                       transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                     >
-                      <RefreshCw className="h-4 w-4" />
+                      {isRefetching ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="h-4 w-4" />
+                      )}
                     </motion.div>
                   </Button>
                 </TooltipTrigger>

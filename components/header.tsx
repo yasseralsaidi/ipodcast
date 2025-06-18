@@ -45,7 +45,7 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
           <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input
             type="text"
-            placeholder="ابحث في أكثر من 70 مليون بودكاست وحلقة..."
+            placeholder="ابحث عن اي بودكاست او حلقة..."
             value={localSearchTerm}
             onChange={(e) => setLocalSearchTerm(e.target.value)}
             className="w-full bg-background border-input text-foreground placeholder-muted-foreground pr-12 pl-4 py-2 rounded-full focus:ring-2 focus:ring-ring focus:border-transparent"

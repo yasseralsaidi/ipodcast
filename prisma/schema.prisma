@@ -36,7 +36,7 @@ model PodcastResult {
     artworkUrl100          String
     collectionPrice        Float
     trackPrice             Float
-    releaseDate            String
+    releaseDate            String?
     collectionExplicitness String
     trackExplicitness      String
     trackCount             Int

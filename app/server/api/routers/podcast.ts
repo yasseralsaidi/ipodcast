@@ -12,23 +12,23 @@ const iTunesPodcastSchema = z.object({
   trackName: z.string(),
   collectionViewUrl: z.string(),
   feedUrl: z.string(),
-  artworkUrl30: z.string(),
-  artworkUrl60: z.string(),
-  artworkUrl100: z.string(),
-  collectionPrice: z.number(),
-  trackPrice: z.number(),
-  releaseDate: z.string(),
-  collectionExplicitness: z.string(),
-  trackExplicitness: z.string(),
-  trackCount: z.number(),
+  artworkUrl30: z.string().optional(),
+  artworkUrl60: z.string().optional(),
+  artworkUrl100: z.string().optional(),
+  collectionPrice: z.number().optional(),
+  trackPrice: z.number().optional(),
+  releaseDate: z.string().optional(),
+  collectionExplicitness: z.string().optional(),
+  trackExplicitness: z.string().optional(),
+  trackCount: z.number().optional(),
   trackTimeMillis: z.number().optional(),
-  country: z.string(),
-  currency: z.string(),
-  primaryGenreName: z.string(),
+  country: z.string().optional(),
+  currency: z.string().optional(),
+  primaryGenreName: z.string().optional(),
   contentAdvisoryRating: z.string().optional(),
-  artworkUrl600: z.string(),
-  genreIds: z.array(z.string()),
-  genres: z.array(z.string()),
+  artworkUrl600: z.string().optional(),
+  genreIds: z.array(z.string()).optional(),
+  genres: z.array(z.string()).optional(),
 });
 
 const iTunesResponseSchema = z.object({
@@ -64,23 +64,23 @@ export const podcastRouter = createTRPCRouter({
                   trackName: result.trackName,
                   collectionViewUrl: result.collectionViewUrl,
                   feedUrl: result.feedUrl,
-                  artworkUrl30: result.artworkUrl30,
-                  artworkUrl60: result.artworkUrl60,
-                  artworkUrl100: result.artworkUrl100,
-                  collectionPrice: result.collectionPrice,
-                  trackPrice: result.trackPrice,
-                  releaseDate: result.releaseDate,
-                  collectionExplicitness: result.collectionExplicitness,
-                  trackExplicitness: result.trackExplicitness,
-                  trackCount: result.trackCount,
+                  artworkUrl30: result.artworkUrl30 ?? "",
+                  artworkUrl60: result.artworkUrl60 ?? "",
+                  artworkUrl100: result.artworkUrl100 ?? "",
+                  collectionPrice: result.collectionPrice ?? 0,
+                  trackPrice: result.trackPrice ?? 0,
+                  releaseDate: result.releaseDate ?? "",
+                  collectionExplicitness: result.collectionExplicitness ?? "",
+                  trackExplicitness: result.trackExplicitness ?? "",
+                  trackCount: result.trackCount ?? 0,
                   trackTimeMillis: result.trackTimeMillis ?? 0,
-                  country: result.country,
-                  currency: result.currency,
-                  primaryGenreName: result.primaryGenreName,
+                  country: result.country ?? "",
+                  currency: result.currency ?? "",
+                  primaryGenreName: result.primaryGenreName ?? "",
                   contentAdvisoryRating: result.contentAdvisoryRating ?? "",
-                  artworkUrl600: result.artworkUrl600,
-                  genreIds: result.genreIds,
-                  genres: result.genres,
+                  artworkUrl600: result.artworkUrl600 ?? "",
+                  genreIds: result.genreIds ?? [],
+                  genres: result.genres ?? [],
                   searchTerm: input.term,
                   searchRecordId: searchRecord.id,
                 },
@@ -110,6 +110,74 @@ export const podcastRouter = createTRPCRouter({
       } catch (error) {
         console.error("Error searching podcasts:", error);
         throw new Error("Failed to search podcasts");
+      }
+    }),
+
+  getRandomPodcasts: publicProcedure
+    .input(z.object({ 
+      searchTerm: z.string().optional(),
+      limit: z.number().min(1).max(50).default(6)
+    }))
+    .query(async ({ input }) => {
+      try {
+        // List of search terms to get diverse podcasts
+        const SEARCH_TERMS = [
+          "podcast",
+          "technology podcast",
+          "business podcast",
+          "news podcast",
+          "entertainment podcast",
+          "education podcast",
+          "science podcast",
+          "health podcast",
+          "sports podcast",
+          "music podcast"
+        ]
+
+        // Use provided search term or get random one
+        const searchTerm = input.searchTerm || SEARCH_TERMS[Math.floor(Math.random() * SEARCH_TERMS.length)]
+        
+        // Fetch from iTunes API using the service
+        const validatedData = await searchPodcasts(searchTerm)
+
+        if (!validatedData.results || validatedData.results.length === 0) {
+          return []
+        }
+
+        // Shuffle the results to get random podcasts
+        const shuffledResults = [...validatedData.results].sort(() => Math.random() - 0.5)
+        // Take only the specified number of podcasts
+        return shuffledResults.slice(0, input.limit)
+      } catch (error) {
+        console.error("Error fetching random podcasts:", error)
+        throw new Error("Failed to fetch random podcasts")
+      }
+    }),
+
+  getPodcastById: publicProcedure
+    .input(z.object({ 
+      collectionId: z.number()
+    }))
+    .query(async ({ input }) => {
+      try {
+        // Search for the podcast by ID
+        const validatedData = await searchPodcasts(input.collectionId.toString())
+        
+        if (!validatedData.results || validatedData.results.length === 0) {
+          throw new Error("Podcast not found")
+        }
+
+        // Find the podcast with matching collectionId
+        const podcast = validatedData.results.find(p => p.collectionId === input.collectionId)
+        
+        if (!podcast) {
+          throw new Error("Podcast not found")
+        }
+
+        return podcast
+      } catch (error) {
+        console.error("Error fetching podcast by ID:", error)
+        throw new Error("Failed to fetch podcast details")
       }
     }),
 

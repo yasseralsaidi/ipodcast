@@ -1,12 +1,7 @@
-import { type iTunesPodcast, searchPodcasts } from "@/app/server/services/itunes"
-import { useCallback, useEffect, useState } from "react"
-
-interface UsePodcastsResult {
-  podcasts: iTunesPodcast[]
-  loading: boolean
-  error: string | null
-  refetch: () => Promise<void>
-}
+import type { AppRouter } from "@/app/server/api/root"
+import { api } from "@/app/trpc/react"
+import type { TRPCClientErrorLike } from "@trpc/client"
+import { useCallback } from "react"
 
 // List of search terms to get diverse podcasts
 const SEARCH_TERMS = [
@@ -22,50 +17,43 @@ const SEARCH_TERMS = [
   "music podcast"
 ]
 
-export function usePodcasts(): UsePodcastsResult {
-  const [podcasts, setPodcasts] = useState<iTunesPodcast[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchPodcasts = useCallback(async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      console.log("Fetching podcasts...")
-      
-      // Get random search term
-      const randomIndex = Math.floor(Math.random() * SEARCH_TERMS.length)
-      const searchTerm = SEARCH_TERMS[randomIndex]
-      
-      const response = await searchPodcasts(searchTerm)
-      
-      if (!response.results || response.results.length === 0) {
-        throw new Error("No podcasts found")
-      }
-
-      // Shuffle the results to get random podcasts
-      const shuffledResults = [...response.results].sort(() => Math.random() - 0.5)
-      // Take only the first 6 podcasts
-      const randomPodcasts = shuffledResults.slice(0, 6)
-
-      console.log(`Found ${randomPodcasts.length} random podcasts`)
-      setPodcasts(randomPodcasts)
-    } catch (err) {
-      console.error("Error fetching podcasts:", err)
-      setError(err instanceof Error ? err.message : "Failed to load podcasts")
-    } finally {
-      setLoading(false)
+// Utility function for consistent retry logic
+export const createRetryConfig = (maxRetries = 3) => ({
+  retry: (failureCount: number, error: TRPCClientErrorLike<AppRouter>) => {
+    if (failureCount >= maxRetries) return false
+    
+    // Don't retry on 4xx errors (client errors)
+    if (error.data?.httpStatus && error.data.httpStatus >= 400 && error.data.httpStatus < 500) {
+      return false
     }
-  }, [])
+    
+    // Retry on 5xx errors and network errors
+    return true
+  },
+  retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
+})
 
-  useEffect(() => {
-    fetchPodcasts()
-  }, [fetchPodcasts])
+export function usePodcasts() {
+  const randomPodcastsQuery = api.podcast.getRandomPodcasts.useQuery(
+    { limit: 6 },
+    {
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 30 * 60 * 1000, // 30 minutes
+      ...createRetryConfig(3),
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    }
+  )
+
+  const refetch = useCallback(async () => {
+    await randomPodcastsQuery.refetch()
+  }, [randomPodcastsQuery])
 
   return {
-    podcasts,
-    loading,
-    error,
-    refetch: fetchPodcasts
+    podcasts: randomPodcastsQuery.data || [],
+    loading: randomPodcastsQuery.isLoading,
+    error: randomPodcastsQuery.error?.message || null,
+    refetch,
+    isRefetching: randomPodcastsQuery.isRefetching,
   }
 } 
