@@ -93,7 +93,7 @@ export const podcastRouter = createTRPCRouter({
             data: podcastResults,
           };
         } catch (dbError) {
-          console.error("Database error:", dbError);
+          console.error("خطأ في قاعدة البيانات:", dbError);
           // If database operations fail, still return the iTunes API results
           // but transform them to match the PodcastResult type
           return {
@@ -108,8 +108,8 @@ export const podcastRouter = createTRPCRouter({
           };
         }
       } catch (error) {
-        console.error("Error searching podcasts:", error);
-        throw new Error("Failed to search podcasts");
+        console.error("خطأ في البحث عن البودكاست:", error);
+        throw new Error("فشل في البحث عن البودكاست");
       }
     }),
 
@@ -122,16 +122,16 @@ export const podcastRouter = createTRPCRouter({
       try {
         // List of search terms to get diverse podcasts
         const SEARCH_TERMS = [
-          "podcast",
-          "technology podcast",
-          "business podcast",
-          "news podcast",
-          "entertainment podcast",
-          "education podcast",
-          "science podcast",
-          "health podcast",
-          "sports podcast",
-          "music podcast"
+          "بودكاست",
+          "بودكاست تقني",
+          "بودكاست أعمال",
+          "بودكاست أخبار",
+          "بودكاست ترفيهي",
+          "بودكاست تعليمي",
+          "بودكاست علمي",
+          "بودكاست صحي",
+          "بودكاست رياضي",
+          "بودكاست موسيقي"
         ]
 
         // Use provided search term or get random one
@@ -149,8 +149,8 @@ export const podcastRouter = createTRPCRouter({
         // Take only the specified number of podcasts
         return shuffledResults.slice(0, input.limit)
       } catch (error) {
-        console.error("Error fetching random podcasts:", error)
-        throw new Error("Failed to fetch random podcasts")
+        console.error("خطأ في جلب البودكاست العشوائي:", error)
+        throw new Error("فشل في جلب البودكاست العشوائي")
       }
     }),
 
@@ -164,20 +164,20 @@ export const podcastRouter = createTRPCRouter({
         const validatedData = await searchPodcasts(input.collectionId.toString())
         
         if (!validatedData.results || validatedData.results.length === 0) {
-          throw new Error("Podcast not found")
+          throw new Error("لم يتم العثور على البودكاست")
         }
 
         // Find the podcast with matching collectionId
         const podcast = validatedData.results.find(p => p.collectionId === input.collectionId)
         
         if (!podcast) {
-          throw new Error("Podcast not found")
+          throw new Error("لم يتم العثور على البودكاست")
         }
 
         return podcast
       } catch (error) {
-        console.error("Error fetching podcast by ID:", error)
-        throw new Error("Failed to fetch podcast details")
+        console.error("خطأ في جلب البودكاست بالمعرف:", error)
+        throw new Error("فشل في جلب تفاصيل البودكاست")
       }
     }),
 
@@ -195,7 +195,7 @@ export const podcastRouter = createTRPCRouter({
 
       return recentSearches;
     } catch (error) {
-      console.error("Error fetching recent searches:", error);
+      console.error("خطأ في جلب عمليات البحث الأخيرة:", error);
       return [];
     }
   }),
