@@ -45,15 +45,29 @@ const api = axios.create({
     "Content-Type": "application/json",
     "User-Agent": "iPodcast-Search-App/1.0",
   },
-  timeout: 15000, // 15 seconds timeout
+  timeout: 20000, // Increased to 20 seconds
 })
 
 // Retry configuration
 const RETRY_CONFIG = {
-  maxRetries: 3,
-  retryDelay: 1000,
-  backoffMultiplier: 2,
+  maxRetries: 5, // Increased retries
+  retryDelay: 2000, // Increased initial delay
+  backoffMultiplier: 1.5, // Reduced backoff multiplier
 }
+
+// Fallback search terms for when the main search fails
+const FALLBACK_SEARCH_TERMS = [
+  "podcast",
+  "technology",
+  "business",
+  "news",
+  "entertainment",
+  "education",
+  "science",
+  "health",
+  "sports",
+  "music"
+]
 
 // Helper function to delay execution
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -62,15 +76,69 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 const isRetryableError = (error: unknown): boolean => {
   if (axios.isAxiosError(error)) {
     const status = error.response?.status
-    // Retry on 5xx errors, network errors, and timeouts
-    return !status || status >= 500 || status === 429 || error.code === 'ECONNABORTED'
+    // Retry on 5xx errors, network errors, timeouts, and rate limits
+    return !status || status >= 500 || status === 429 || error.code === 'ECONNABORTED' || error.code === 'ENOTFOUND'
   }
   return false
+}
+
+// Helper function to validate and clean API response
+const validateAndCleanResponse = (data: unknown): iTunesSearchResponse => {
+  // Validate the basic structure first
+  if (!data || typeof data !== 'object') {
+    throw new Error("Invalid API response: Response is not an object")
+  }
+
+  const responseData = data as Record<string, unknown>
+  
+  if (!Array.isArray(responseData.results)) {
+    throw new Error("Invalid API response: Results is not an array")
+  }
+
+  // Clean and validate each result
+  const cleanedResults = responseData.results
+    .filter((result: unknown) => result && typeof result === 'object')
+    .map((result: unknown) => {
+      const podcastResult = result as Record<string, unknown>
+      return {
+        collectionId: (podcastResult.collectionId as number) || (podcastResult.trackId as number) || 0,
+        trackId: (podcastResult.trackId as number) || (podcastResult.collectionId as number) || 0,
+        artistName: (podcastResult.artistName as string) || (podcastResult.artist as string) || "Unknown Artist",
+        collectionName: (podcastResult.collectionName as string) || (podcastResult.collection as string) || "Unknown Collection",
+        trackName: (podcastResult.trackName as string) || (podcastResult.title as string) || "Unknown Track",
+        collectionViewUrl: (podcastResult.collectionViewUrl as string) || (podcastResult.url as string) || "",
+        feedUrl: (podcastResult.feedUrl as string) || (podcastResult.feed as string) || "",
+        artworkUrl30: (podcastResult.artworkUrl30 as string) || (podcastResult.artwork as string) || "",
+        artworkUrl60: (podcastResult.artworkUrl60 as string) || (podcastResult.artwork as string) || "",
+        artworkUrl100: (podcastResult.artworkUrl100 as string) || (podcastResult.artwork as string) || "",
+        collectionPrice: (podcastResult.collectionPrice as number) || 0,
+        trackPrice: (podcastResult.trackPrice as number) || 0,
+        releaseDate: (podcastResult.releaseDate as string) || "",
+        collectionExplicitness: (podcastResult.collectionExplicitness as string) || "",
+        trackExplicitness: (podcastResult.trackExplicitness as string) || "",
+        trackCount: (podcastResult.trackCount as number) || 0,
+        trackTimeMillis: (podcastResult.trackTimeMillis as number) || 0,
+        country: (podcastResult.country as string) || "",
+        currency: (podcastResult.currency as string) || "",
+        primaryGenreName: (podcastResult.primaryGenreName as string) || (podcastResult.genre as string) || "",
+        contentAdvisoryRating: (podcastResult.contentAdvisoryRating as string) || "",
+        artworkUrl600: (podcastResult.artworkUrl600 as string) || (podcastResult.artwork as string) || "",
+        genreIds: Array.isArray(podcastResult.genreIds) ? podcastResult.genreIds as string[] : [],
+        genres: Array.isArray(podcastResult.genres) ? podcastResult.genres as string[] : [],
+      }
+    })
+    .filter(result => result.collectionId && result.artistName && result.collectionName)
+
+  return {
+    resultCount: cleanedResults.length,
+    results: cleanedResults
+  }
 }
 
 export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchResponse> {
   let lastError: unknown = null
 
+  // Try with the original search term first
   for (let attempt = 1; attempt <= RETRY_CONFIG.maxRetries; attempt++) {
     try {
       console.log(`Searching iTunes API for: ${searchTerm} (attempt ${attempt}/${RETRY_CONFIG.maxRetries})`)
@@ -85,47 +153,15 @@ export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchRe
         },
       })
 
-      // Log the raw response for debugging
-      console.log("Raw iTunes API response:", JSON.stringify(data, null, 2))
+      // Validate and clean the response
+      const validatedData = validateAndCleanResponse(data)
 
-      // Validate the basic structure first
-      if (!data || typeof data !== 'object') {
-        throw new Error("Invalid API response: Response is not an object")
+      if (validatedData.resultCount === 0) {
+        throw new Error("No podcasts found for the given search term")
       }
 
-      if (!Array.isArray(data.results)) {
-        throw new Error("Invalid API response: Results is not an array")
-      }
-
-      // Log the first result for debugging
-      if (data.results.length > 0) {
-        console.log("First result structure:", {
-          keys: Object.keys(data.results[0]),
-          sample: data.results[0]
-        })
-      }
-
-      try {
-        const validatedData = z.object({
-          resultCount: z.number(),
-          results: z.array(iTunesPodcastSchema),
-        }).parse(data)
-
-        if (validatedData.resultCount === 0) {
-          throw new Error("No podcasts found for the given search term")
-        }
-
-        // console.log(`Successfully fetched ${validatedData.resultCount} podcasts`)
-        return validatedData
-      } catch (validationError) {
-        if (validationError instanceof z.ZodError) {
-          console.error("Validation errors:", validationError.errors.map(err => ({
-            path: err.path.join('.'),
-            message: err.message
-          })))
-        }
-        throw new Error("Invalid response format from iTunes API")
-      }
+      console.log(`Successfully fetched ${validatedData.resultCount} podcasts for "${searchTerm}"`)
+      return validatedData
     } catch (error) {
       lastError = error
       
@@ -134,7 +170,6 @@ export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchRe
           status: error.response?.status,
           statusText: error.response?.statusText,
           message: error.message,
-          data: error.response?.data,
           code: error.code,
         })
         
@@ -142,16 +177,14 @@ export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchRe
         if (!isRetryableError(error)) {
           throw new Error(`iTunes API error: ${error.response?.status} ${error.response?.statusText}`)
         }
-      } else if (error instanceof z.ZodError) {
-        console.error("Validation error:", error.errors)
-        throw new Error("Invalid response format from iTunes API")
       } else {
         console.error(`Error fetching from iTunes API (attempt ${attempt}):`, error)
       }
 
-      // If this is the last attempt, throw the error
+      // If this is the last attempt, try fallback search terms
       if (attempt === RETRY_CONFIG.maxRetries) {
-        throw new Error("Failed to fetch data from iTunes API after multiple attempts")
+        console.log(`All attempts failed for "${searchTerm}", trying fallback search terms...`)
+        break
       }
 
       // Calculate delay for next retry
@@ -161,6 +194,32 @@ export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchRe
     }
   }
 
-  // This should never be reached, but just in case
-  throw lastError || new Error("Failed to fetch data from iTunes API")
+  // Try fallback search terms if the original search failed
+  for (const fallbackTerm of FALLBACK_SEARCH_TERMS) {
+    try {
+      console.log(`Trying fallback search term: ${fallbackTerm}`)
+      
+      const { data } = await api.get("", {
+        params: {
+          media: "podcast",
+          term: fallbackTerm,
+          limit: 50,
+          country: "US", // Use US for fallback terms
+          lang: "en", // Use English for fallback terms
+        },
+      })
+
+      const validatedData = validateAndCleanResponse(data)
+
+      if (validatedData.resultCount > 0) {
+        console.log(`Successfully fetched ${validatedData.resultCount} podcasts using fallback term "${fallbackTerm}"`)
+        return validatedData
+      }
+    } catch (error) {
+      console.error(`Fallback search failed for "${fallbackTerm}":`, error)
+    }
+  }
+
+  // If all attempts fail, throw the last error
+  throw lastError || new Error("Failed to fetch data from iTunes API after multiple attempts")
 } 

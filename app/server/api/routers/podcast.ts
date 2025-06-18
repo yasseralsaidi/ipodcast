@@ -109,7 +109,13 @@ export const podcastRouter = createTRPCRouter({
         }
       } catch (error) {
         console.error("خطأ في البحث عن البودكاست:", error);
-        throw new Error("فشل في البحث عن البودكاست");
+        
+        // Return empty results instead of throwing error to prevent app crashes
+        return {
+          success: false,
+          data: [],
+          error: "فشل في البحث عن البودكاست"
+        };
       }
     }),
 
@@ -141,16 +147,23 @@ export const podcastRouter = createTRPCRouter({
         const validatedData = await searchPodcasts(searchTerm)
 
         if (!validatedData.results || validatedData.results.length === 0) {
+          console.log("No results found, returning empty array")
           return []
         }
 
         // Shuffle the results to get random podcasts
         const shuffledResults = [...validatedData.results].sort(() => Math.random() - 0.5)
         // Take only the specified number of podcasts
-        return shuffledResults.slice(0, input.limit)
+        const limitedResults = shuffledResults.slice(0, input.limit)
+        
+        console.log(`Successfully returned ${limitedResults.length} random podcasts`)
+        return limitedResults
       } catch (error) {
         console.error("خطأ في جلب البودكاست العشوائي:", error)
-        throw new Error("فشل في جلب البودكاست العشوائي")
+        
+        // Return empty array instead of throwing error to prevent app crashes
+        // This allows the UI to handle the empty state gracefully
+        return []
       }
     }),
 
@@ -177,7 +190,10 @@ export const podcastRouter = createTRPCRouter({
         return podcast
       } catch (error) {
         console.error("خطأ في جلب البودكاست بالمعرف:", error)
-        throw new Error("فشل في جلب تفاصيل البودكاست")
+        
+        // Return null instead of throwing error to prevent app crashes
+        // This allows the UI to handle the null state gracefully
+        return null
       }
     }),
 
