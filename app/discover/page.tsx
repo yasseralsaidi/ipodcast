@@ -13,7 +13,7 @@ export default function DiscoverPage() {
         {/* Enhanced Header */}
         <div className="text-center space-y-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 blur-3xl rounded-full" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 blur-3xl rounded-full" />
             <div className="relative">
               <h1 className="text-3xl lg:text-5xl font-bold text-foreground mb-4">
                 استكشاف البودكاست

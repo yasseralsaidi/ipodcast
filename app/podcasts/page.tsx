@@ -256,7 +256,7 @@ export default function PodcastsPage() {
                 ) : (
                   <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
                     {filteredPodcasts.map((podcast) => (
-                      <Card key={podcast.id} className="group hover:shadow-lg transition-all duration-300 border shadow-sm hover:shadow-md">
+                      <Card key={podcast.id} className="group transition-all duration-300 border shadow-sm hover:shadow-md">
                         <CardHeader className="pb-4">
                           <div className="flex items-start gap-4">
                             <div className="relative">
