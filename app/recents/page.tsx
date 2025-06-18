@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-    Calendar,
-    Clock,
-    History,
-    Play,
-    TrendingUp
+  Calendar,
+  Clock,
+  History,
+  Play,
+  TrendingUp
 } from "lucide-react"
 import { useState } from "react"
 
@@ -106,7 +106,7 @@ export default function RecentsPage() {
   const getProgressColor = (progress: number) => {
     if (progress >= 80) return "bg-green-500"
     if (progress >= 50) return "bg-yellow-500"
-    return "bg-blue-500"
+    return "bg-primary"
   }
 
   const formatProgress = (progress: number) => {
@@ -136,8 +136,8 @@ export default function RecentsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <Clock className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">إجمالي وقت الاستماع</p>
@@ -149,7 +149,7 @@ export default function RecentsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
                 <Play className="w-6 h-6 text-green-600" />
               </div>
               <div>
@@ -162,7 +162,7 @@ export default function RecentsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-6 h-6 text-purple-600" />
               </div>
               <div>
