@@ -35,7 +35,7 @@ export const createRetryConfig = (maxRetries = 3) => ({
 
 export function usePodcasts() {
   const randomPodcastsQuery = api.podcast.getRandomPodcasts.useQuery(
-    { limit: 6 },
+    { limit: 8 },
     {
       staleTime: 10 * 60 * 1000, // 10 minutes
       gcTime: 30 * 60 * 1000, // 30 minutes
