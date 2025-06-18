@@ -34,10 +34,10 @@ export default function PodcastDetails() {
 
   if (loading) {
     return (
-      <div className="container py-12 text-center">
+      <div className="container py-8 lg:py-12 text-center">
         <div className="flex flex-col items-center gap-4">
           <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-          <h1 className="text-2xl font-bold">جاري التحميل...</h1>
+          <h1 className="text-xl lg:text-2xl font-bold">جاري التحميل...</h1>
         </div>
       </div>
     )
@@ -45,11 +45,11 @@ export default function PodcastDetails() {
 
   if (error || !podcast) {
     return (
-      <div className="container py-12 text-center">
+      <div className="container py-8 lg:py-12 text-center">
         <div className="flex flex-col items-center gap-4">
           <AlertCircle className="w-12 h-12 text-destructive" />
           <div>
-            <h1 className="text-2xl font-bold text-destructive mb-2">
+            <h1 className="text-xl lg:text-2xl font-bold text-destructive mb-2">
               {error?.message || "البودكاست غير موجود"}
             </h1>
             <p className="text-muted-foreground mb-4">
@@ -74,7 +74,7 @@ export default function PodcastDetails() {
   }
 
   return (
-    <div className="container py-12">
+    <div className="container py-6 lg:py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,28 +82,28 @@ export default function PodcastDetails() {
         className="max-w-6xl mx-auto"
       >
         {/* Hero Section */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 mb-8 lg:mb-12">
           {/* Podcast Artwork */}
-          <div className="md:col-span-1">
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted">
+          <div className="lg:col-span-1 flex justify-center lg:justify-start">
+            <div className="relative aspect-square w-64 lg:w-full max-w-sm rounded-2xl overflow-hidden bg-muted">
               <Image
                 src={podcast.artworkUrl600 || podcast.artworkUrl100 || "/placeholder.svg"}
                 alt={podcast.collectionName || podcast.trackName}
                 className="object-cover"
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="(max-width: 768px) 256px, (max-width: 1200px) 50vw, 33vw"
                 priority
               />
             </div>
           </div>
 
           {/* Podcast Info */}
-          <div className="md:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
             <div>
-              <h1 className="text-4xl font-bold mb-2">
+              <h1 className="text-2xl lg:text-4xl font-bold mb-2 line-clamp-2">
                 {podcast.collectionName || podcast.trackName}
               </h1>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-lg lg:text-xl text-muted-foreground line-clamp-1">
                 {podcast.artistName}
               </p>
             </div>
@@ -111,20 +111,20 @@ export default function PodcastDetails() {
             <div className="flex flex-wrap gap-2">
               <Button 
                 size="lg" 
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-sm lg:text-base"
                 onClick={() => window.open(podcast.collectionViewUrl, '_blank')}
               >
                 <Play className="w-4 h-4" />
                 استمع الآن
               </Button>
-              <Button variant="outline" size="lg" className="flex items-center gap-2">
+              <Button variant="outline" size="lg" className="flex items-center gap-2 text-sm lg:text-base">
                 <Heart className="w-4 h-4" />
                 إضافة للمفضلة
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-sm lg:text-base"
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -142,10 +142,10 @@ export default function PodcastDetails() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
               <div>
                 <p className="font-semibold">النوع</p>
-                <p className="text-muted-foreground">{podcast.primaryGenreName}</p>
+                <p className="text-muted-foreground line-clamp-1">{podcast.primaryGenreName}</p>
               </div>
               <div>
                 <p className="font-semibold">عدد الحلقات</p>
@@ -159,7 +159,7 @@ export default function PodcastDetails() {
               </div>
               <div>
                 <p className="font-semibold">تاريخ الإصدار</p>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground line-clamp-1">
                   {podcast.releaseDate ? new Date(podcast.releaseDate).toLocaleDateString('ar-SA') : "غير متوفر"}
                 </p>
               </div>
@@ -168,42 +168,80 @@ export default function PodcastDetails() {
         </div>
 
         {/* Additional Details */}
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>معلومات البودكاست</CardTitle>
+                <CardTitle className="text-lg lg:text-xl">معلومات البودكاست</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-semibold mb-2">النوع</h3>
-                    <p className="text-muted-foreground">{podcast.primaryGenreName}</p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-semibold mb-2">عدد الحلقات</h3>
-                    <p className="text-muted-foreground">{podcast.trackCount} حلقة</p>
-                  </div>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">النوع</h3>
+                  <p className="text-muted-foreground">{podcast.primaryGenreName}</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">عدد الحلقات</h3>
+                  <p className="text-muted-foreground">{podcast.trackCount} حلقة</p>
+                </div>
 
-                  <div>
-                    <h3 className="font-semibold mb-2">تاريخ الإصدار</h3>
-                    <p className="text-muted-foreground">
-                      {podcast.releaseDate ? new Date(podcast.releaseDate).toLocaleDateString('ar-SA') : "غير متوفر"}
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="font-semibold mb-2">تاريخ الإصدار</h3>
+                  <p className="text-muted-foreground">
+                    {podcast.releaseDate ? new Date(podcast.releaseDate).toLocaleDateString('ar-SA') : "غير متوفر"}
+                  </p>
+                </div>
 
-                  <div>
-                    <h3 className="font-semibold mb-2">الرابط</h3>
-                    <a 
-                      href={podcast.collectionViewUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline"
-                    >
-                      استمع على Apple Podcasts
-                    </a>
+                <div>
+                  <h3 className="font-semibold mb-2">الرابط</h3>
+                  <a 
+                    href={podcast.collectionViewUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline break-all"
+                  >
+                    {podcast.collectionViewUrl}
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="lg:col-span-1">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg lg:text-xl">تفاصيل إضافية</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">البلد</h3>
+                  <p className="text-muted-foreground">{podcast.country || "غير محدد"}</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-2">العملة</h3>
+                  <p className="text-muted-foreground">{podcast.currency}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-2">الأنواع</h3>
+                  <div className="flex flex-wrap gap-1">
+                    {podcast.genres?.slice(0, 3).map((genre) => (
+                      <span key={genre} className="text-xs bg-muted px-2 py-1 rounded">
+                        {genre}
+                      </span>
+                    ))}
                   </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-2">مدة الحلقة</h3>
+                  <p className="text-muted-foreground">
+                    {podcast.trackTimeMillis 
+                      ? `${Math.round(podcast.trackTimeMillis / 60000)} دقيقة`
+                      : "غير متوفر"
+                    }
+                  </p>
                 </div>
               </CardContent>
             </Card>

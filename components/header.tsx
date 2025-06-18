@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Search } from "lucide-react"
+import { Menu, Search } from "lucide-react"
 import Link from "next/link"
 import type React from "react"
 import { useState } from "react"
@@ -14,9 +14,11 @@ import { useState } from "react"
 interface HeaderProps {
   onSearch?: (term: string) => void
   searchTerm?: string
+  onMenuToggle?: () => void
+  isMobile?: boolean
 }
 
-export function Header({ onSearch, searchTerm }: HeaderProps) {
+export function Header({ onSearch, searchTerm, onMenuToggle, isMobile }: HeaderProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || "")
   const { user, isLoading } = useAuth()
 
@@ -26,21 +28,28 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
   }
 
   return (
-    <header className="bg-background border-b h-16 flex items-center justify-between px-6 fixed top-0 right-64 left-0 z-10">
-      {/* Navigation Arrows */}
-      {/* <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
-          <ChevronRight className="w-5 h-5" />
-          <span className="sr-only">السابق</span>
+    <header className={`
+      bg-background border-b h-16 flex items-center justify-between px-4 lg:px-6 fixed top-0 z-10
+      ${isMobile ? 'left-0 right-0' : 'right-64 left-0'}
+    `}>
+      {/* Mobile Menu Button */}
+      {isMobile && onMenuToggle && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onMenuToggle}
+          className="lg:hidden"
+          aria-label="فتح القائمة"
+        >
+          <Menu className="w-5 h-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
-          <ChevronLeft className="w-5 h-5" />
-          <span className="sr-only">التالي</span>
-        </Button>
-      </div> */}
+      )}
 
       {/* Search Bar */}
-      <div className="flex-1 max-w-2xl mx-8">
+      <div className={`
+        flex-1 mx-4
+        ${isMobile ? 'max-w-none' : 'max-w-2xl mx-8'}
+      `}>
         <form onSubmit={handleSubmit} className="relative">
           <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input

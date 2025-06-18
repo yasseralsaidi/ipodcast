@@ -46,10 +46,10 @@ export function PodcastSection() {
 
   if (loading && podcasts.length === 0) {
     return (
-      <section className="py-16 bg-background">
+      <section className="py-8 lg:py-16 bg-background">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+          <div className="text-center mb-8 lg:mb-12">
+            <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4">
               جاري التحميل...
             </h2>
           </div>
@@ -60,10 +60,10 @@ export function PodcastSection() {
 
   if (error && podcasts.length === 0) {
     return (
-      <section className="py-16 bg-background">
+      <section className="py-8 lg:py-16 bg-background">
         <div className="container px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4 text-destructive">
+          <div className="text-center mb-8 lg:mb-12">
+            <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4 text-destructive">
               {error}
             </h2>
             <Button 
@@ -80,15 +80,15 @@ export function PodcastSection() {
   }
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-8 lg:py-16 bg-background">
       <div className="container px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 lg:mb-12"
         >
-          <div className="flex items-center justify-center mb-8 relative">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          <div className="flex items-center justify-center mb-6 lg:mb-8 relative">
+            <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
               البودكاست المميزة
             </h2>
             <TooltipProvider>
@@ -98,7 +98,7 @@ export function PodcastSection() {
                     variant="outline"
                     size="icon"
                     onClick={handleRefresh}
-                    className="h-10 w-10 absolute right-0"
+                    className="h-8 w-8 lg:h-10 lg:w-10 absolute right-0"
                     disabled={isRefetching}
                   >
                     <motion.div
@@ -106,9 +106,9 @@ export function PodcastSection() {
                       transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                     >
                       {isRefetching ? (
-                        <RefreshCw className="h-4 w-4 animate-spin" />
+                        <RefreshCw className="h-3 w-3 lg:h-4 lg:w-4 animate-spin" />
                       ) : (
-                        <RefreshCw className="h-4 w-4" />
+                        <RefreshCw className="h-3 w-3 lg:h-4 lg:w-4" />
                       )}
                     </motion.div>
                   </Button>
@@ -119,7 +119,7 @@ export function PodcastSection() {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <p className="text-muted-foreground max-w-[700px] mx-auto">
+          <p className="text-muted-foreground max-w-[700px] mx-auto px-4">
             اكتشف مجموعة متنوعة من البودكاست المميزة في مختلف المجالات
           </p>
         </motion.div>
@@ -131,7 +131,7 @@ export function PodcastSection() {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
           >
             {podcasts.map((podcast) => (
               <motion.div
@@ -150,26 +150,26 @@ export function PodcastSection() {
                       className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
-                  <CardHeader>
-                    <CardTitle className="text-xl">{podcast.collectionName}</CardTitle>
-                    <CardDescription className="text-base">{podcast.artistName}</CardDescription>
+                  <CardHeader className="p-4 lg:p-6">
+                    <CardTitle className="text-lg lg:text-xl line-clamp-2">{podcast.collectionName}</CardTitle>
+                    <CardDescription className="text-sm lg:text-base line-clamp-1">{podcast.artistName}</CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4 mr-2" />
+                  <CardContent className="p-4 lg:p-6 pt-0">
+                    <div className="flex items-center text-xs lg:text-sm text-muted-foreground">
+                      <Clock className="w-3 h-3 lg:w-4 lg:h-4 mr-2" />
                       {podcast.trackCount} حلقات
                     </div>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="p-4 lg:p-6 pt-0">
                     <Button 
-                      className="w-full group-hover:bg-primary/90" 
+                      className="w-full group-hover:bg-primary/90 text-sm lg:text-base" 
                       variant="default"
                       onClick={(e) => {
                         e.stopPropagation()
                         handlePodcastClick(podcast.collectionId)
                       }}
                     >
-                      <Play className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                      <Play className="w-3 h-3 lg:w-4 lg:h-4 ml-2 transition-transform group-hover:translate-x-1" />
                       استمع الآن
                     </Button>
                   </CardFooter>

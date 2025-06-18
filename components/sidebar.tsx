@@ -1,9 +1,10 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Clock, Compass, Headphones, Home, List } from "lucide-react"
+import { Clock, Compass, Headphones, Home, List, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { Button } from "./ui/button"
 
 const navigation = [
   { name: "الرئيسية", href: "/", icon: Home },
@@ -16,19 +17,40 @@ const userStuff = [
   { name: "الأخيرة", href: "/recents", icon: Clock },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void
+}
+
+export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname()
 
+  const handleLinkClick = () => {
+    if (onClose) {
+      onClose()
+    }
+  }
+
   return (
-    <div className="w-64 bg-background h-screen fixed right-0 top-0 border-l flex flex-col">
-      {/* Logo */}
-      <div className="p-6">
+    <div className="w-full bg-background h-screen border-l flex flex-col">
+      {/* Logo and Close Button */}
+      <div className="p-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
             <div className="w-6 h-6 bg-background rounded-sm" />
           </div>
           <span className="text-xl font-semibold text-foreground">اي بودكاست</span>
         </div>
+        {onClose && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="lg:hidden"
+            aria-label="إغلاق القائمة"
+          >
+            <X className="w-5 h-5" />
+          </Button>
+        )}
       </div>
 
       {/* Navigation */}
@@ -40,6 +62,7 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={handleLinkClick}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                   pathname === item.href
@@ -64,6 +87,7 @@ export function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={handleLinkClick}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                     pathname === item.href
