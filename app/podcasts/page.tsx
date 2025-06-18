@@ -196,7 +196,7 @@ export default function PodcastsPage() {
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="icon"
                 onClick={() => setViewMode("grid")}
-                className={`h-10 w-10 rounded-lg ${viewMode === "grid" ? "bg-muted-foreground  shadow-sm" : ""}`}
+                className={`h-10 w-10 rounded-lg ${viewMode === "grid" ? "bg-primary text-primary-foreground shadow-sm" : ""}`}
               >
                 <Grid3X3 className="w-4 h-4" />
               </Button>
@@ -204,7 +204,7 @@ export default function PodcastsPage() {
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="icon"
                 onClick={() => setViewMode("list")}
-                className={`h-10 w-10 rounded-lg ${viewMode === "list" ? "bg-muted-foreground shadow-sm" : ""}`}
+                className={`h-10 w-10 rounded-lg ${viewMode === "list" ? "bg-primary text-primary-foreground shadow-sm" : ""}`}
               >
                 <List className="w-4 h-4" />
               </Button>
