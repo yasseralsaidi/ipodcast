@@ -66,7 +66,17 @@ const FALLBACK_SEARCH_TERMS = [
   "science",
   "health",
   "sports",
-  "music"
+  "music",
+  "comedy",
+  "true crime",
+  "history",
+  "politics",
+  "economics",
+  "psychology",
+  "philosophy",
+  "literature",
+  "art",
+  "culture"
 ]
 
 // Helper function to delay execution
@@ -157,7 +167,8 @@ export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchRe
       const validatedData = validateAndCleanResponse(data)
 
       if (validatedData.resultCount === 0) {
-        throw new Error("No podcasts found for the given search term")
+        console.log(`No podcasts found for "${searchTerm}", will try fallback terms`)
+        return { resultCount: 0, results: [] }
       }
 
       console.log(`Successfully fetched ${validatedData.resultCount} podcasts for "${searchTerm}"`)
@@ -215,8 +226,11 @@ export async function searchPodcasts(searchTerm: string): Promise<iTunesSearchRe
         console.log(`Successfully fetched ${validatedData.resultCount} podcasts using fallback term "${fallbackTerm}"`)
         return validatedData
       }
+      
+      console.log(`No results found for fallback term "${fallbackTerm}"`)
     } catch (error) {
       console.error(`Fallback search failed for "${fallbackTerm}":`, error)
+      // Continue to next fallback term instead of breaking
     }
   }
 

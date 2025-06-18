@@ -60,7 +60,7 @@ export function PodcastSection() {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {Array.from({ length: 6 }, (_, i) => (
-              <Card key={`podcast-skeleton-${Date.now()}-${i}`} className="h-full">
+              <Card key={`podcast-skeleton-${Math.random().toString(36).substr(2, 9)}-${i}`} className="h-full">
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
                   <Skeleton className="w-full h-full" />
                 </div>
@@ -126,14 +126,11 @@ export function PodcastSection() {
                     disabled={isRefetching}
                   >
                     <motion.div
+                      key={isRefetching ? 'refetching' : 'idle'}
                       animate={isRefetching ? { rotate: 360 } : {}}
                       transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                     >
-                      {isRefetching ? (
-                        <RefreshCw className="h-3 w-3 lg:h-4 lg:w-4 animate-spin" />
-                      ) : (
-                        <RefreshCw className="h-3 w-3 lg:h-4 lg:w-4" />
-                      )}
+                      <RefreshCw className="h-3 w-3 lg:h-4 lg:w-4" />
                     </motion.div>
                   </Button>
                 </TooltipTrigger>
@@ -201,6 +198,18 @@ export function PodcastSection() {
               </motion.div>
             ))}
           </motion.div>
+          
+          {!loading && podcasts.length > 0 && podcasts.length < 6 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mt-8"
+            >
+              <p className="text-muted-foreground">
+                تم العثور على {podcasts.length} بودكاست. جرب تحديث الصفحة للحصول على المزيد.
+              </p>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </section>

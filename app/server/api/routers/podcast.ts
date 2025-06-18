@@ -128,35 +128,71 @@ export const podcastRouter = createTRPCRouter({
       try {
         // List of search terms to get diverse podcasts
         const SEARCH_TERMS = [
+          "podcast",
+          "technology podcast",
+          "business podcast", 
+          "news podcast",
+          "entertainment podcast",
+          "education podcast",
+          "science podcast",
+          "health podcast",
+          "sports podcast",
+          "music podcast",
+          "comedy podcast",
+          "true crime podcast",
           "بودكاست",
           "بودكاست تقني",
-          "بودكاست أعمال",
-          "بودكاست أخبار",
-          "بودكاست ترفيهي",
-          "بودكاست تعليمي",
-          "بودكاست علمي",
-          "بودكاست صحي",
-          "بودكاست رياضي",
-          "بودكاست موسيقي"
+          "بودكاست أعمال"
         ]
 
         // Use provided search term or get random one
         const searchTerm = input.searchTerm || SEARCH_TERMS[Math.floor(Math.random() * SEARCH_TERMS.length)]
         
-        // Fetch from iTunes API using the service
-        const validatedData = await searchPodcasts(searchTerm)
+        const allResults: z.infer<typeof iTunesPodcastSchema>[] = []
+        const maxAttempts = 3
 
-        if (!validatedData.results || validatedData.results.length === 0) {
-          console.log("No results found, returning empty array")
+        // Try multiple search terms to ensure we get enough results
+        for (let attempts = 0; allResults.length < input.limit && attempts < maxAttempts; attempts++) {
+          const currentSearchTerm = attempts === 0 ? searchTerm : SEARCH_TERMS[Math.floor(Math.random() * SEARCH_TERMS.length)]
+          
+          try {
+            console.log(`Attempt ${attempts + 1}: Searching for "${currentSearchTerm}"`)
+            
+            // Fetch from iTunes API using the service
+            const validatedData = await searchPodcasts(currentSearchTerm)
+
+            if (validatedData.results && validatedData.results.length > 0) {
+              // Add new results that we haven't seen before
+              const newResults = validatedData.results.filter(newResult => 
+                !allResults.some(existingResult => existingResult.collectionId === newResult.collectionId)
+              )
+              
+              allResults.push(...newResults)
+              console.log(`Added ${newResults.length} new results from "${currentSearchTerm}", total: ${allResults.length}`)
+            } else {
+              console.log(`No results found for "${currentSearchTerm}", trying next search term`)
+            }
+          } catch (error) {
+            console.error(`Failed to fetch podcasts for "${currentSearchTerm}":`, error)
+          }
+          
+          // Add a small delay between attempts to avoid rate limiting
+          if (attempts < maxAttempts - 1 && allResults.length < input.limit) {
+            await new Promise(resolve => setTimeout(resolve, 500))
+          }
+        }
+
+        if (allResults.length === 0) {
+          console.log("No results found after all attempts, returning empty array")
           return []
         }
 
         // Shuffle the results to get random podcasts
-        const shuffledResults = [...validatedData.results].sort(() => Math.random() - 0.5)
-        // Take only the specified number of podcasts
-        const limitedResults = shuffledResults.slice(0, input.limit)
+        const shuffledResults = [...allResults].sort(() => Math.random() - 0.5)
+        // Take only the specified number of podcasts, or all available if fewer than requested
+        const limitedResults = shuffledResults.slice(0, Math.min(input.limit, allResults.length))
         
-        console.log(`Successfully returned ${limitedResults.length} random podcasts`)
+        console.log(`Successfully returned ${limitedResults.length} random podcasts from ${allResults.length} total results`)
         return limitedResults
       } catch (error) {
         console.error("خطأ في جلب البودكاست العشوائي:", error)
