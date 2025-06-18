@@ -5,16 +5,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-    Bell,
-    Check,
-    Clock,
-    Play,
-    Settings,
-    Star,
-    Trash2,
-    Users,
-    X
+  Bell,
+  Check,
+  Clock,
+  Play,
+  Settings,
+  Sparkles,
+  Star,
+  Trash2,
+  Users,
+  X
 } from "lucide-react"
+import { motion } from "motion/react"
 import { useState } from "react"
 
 interface Notification {
@@ -115,13 +117,13 @@ export default function NotificationsPage() {
   const getNotificationColor = (type: string) => {
     switch (type) {
       case "episode":
-        return "border-blue-200 bg-blue-50"
+        return "border-blue-200 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-800"
       case "podcast":
-        return "border-green-200 bg-green-50"
+        return "border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800"
       case "recommendation":
-        return "border-yellow-200 bg-yellow-50"
+        return "border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20 dark:border-yellow-800"
       case "system":
-        return "border-gray-200 bg-gray-50"
+        return "border-gray-200 bg-gray-50 dark:bg-gray-950/20 dark:border-gray-800"
       default:
         return "border-border bg-background"
     }
@@ -134,183 +136,255 @@ export default function NotificationsPage() {
     : notifications.filter(n => n.type === activeTab)
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">الإشعارات</h1>
-          <p className="text-muted-foreground">
-            {unreadCount > 0 ? `${unreadCount} إشعارات جديدة` : "لا توجد إشعارات جديدة"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Enhanced Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-6"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 blur-3xl rounded-full" />
+            <div className="relative">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Bell className="w-8 h-8 text-primary" />
+                <h1 className="text-3xl lg:text-4xl font-bold text-foreground">
+                  الإشعارات
+                </h1>
+              </div>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <span className="text-sm text-muted-foreground">
+                  {unreadCount > 0 ? `${unreadCount} إشعارات جديدة` : "لا توجد إشعارات جديدة"}
+                </span>
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Enhanced Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-4 gap-6"
+        >
+          <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                  <Bell className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">إجمالي الإشعارات</p>
+                  <p className="text-2xl font-bold">{notifications.length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
+                  <Play className="w-6 h-6 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">حلقات جديدة</p>
+                  <p className="text-2xl font-bold">
+                    {notifications.filter(n => n.type === "episode" && !n.read).length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                  <Star className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">توصيات</p>
+                  <p className="text-2xl font-bold">
+                    {notifications.filter(n => n.type === "recommendation").length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">بودكاستات</p>
+                  <p className="text-2xl font-bold">
+                    {notifications.filter(n => n.type === "podcast").length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Enhanced Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex items-center justify-center gap-3"
+        >
           {unreadCount > 0 && (
-            <Button variant="outline" onClick={handleMarkAllAsRead}>
+            <Button 
+              variant="outline" 
+              onClick={handleMarkAllAsRead}
+              className="border-2 border-border/50 hover:border-primary/50 transition-all duration-300"
+            >
               <Check className="w-4 h-4 ml-2" />
               تحديد الكل كمقروء
             </Button>
           )}
           {notifications.length > 0 && (
-            <Button variant="outline" onClick={handleDeleteAll}>
+            <Button 
+              variant="outline" 
+              onClick={handleDeleteAll}
+              className="border-2 border-border/50 hover:border-destructive/50 text-destructive hover:text-destructive transition-all duration-300"
+            >
               <Trash2 className="w-4 h-4 ml-2" />
               حذف الكل
             </Button>
           )}
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Bell className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">إجمالي الإشعارات</p>
-                <p className="text-xl font-bold">{notifications.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                <Play className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">حلقات جديدة</p>
-                <p className="text-xl font-bold">
-                  {notifications.filter(n => n.type === "episode" && !n.read).length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Star className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">توصيات</p>
-                <p className="text-xl font-bold">
-                  {notifications.filter(n => n.type === "recommendation" && !n.read).length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">بودكاستات</p>
-                <p className="text-xl font-bold">
-                  {notifications.filter(n => n.type === "podcast" && !n.read).length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Enhanced Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-6"
+        >
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5 bg-muted/50 border-2 border-border/50">
+              <TabsTrigger value="all" className="flex items-center gap-2 data-[state=active]:bg-background">
+                <Bell className="w-4 h-4" />
+                الكل
+              </TabsTrigger>
+              <TabsTrigger value="unread" className="flex items-center gap-2 data-[state=active]:bg-background">
+                <Clock className="w-4 h-4" />
+                غير مقروءة
+              </TabsTrigger>
+              <TabsTrigger value="episode" className="flex items-center gap-2 data-[state=active]:bg-background">
+                <Play className="w-4 h-4" />
+                الحلقات
+              </TabsTrigger>
+              <TabsTrigger value="podcast" className="flex items-center gap-2 data-[state=active]:bg-background">
+                <Users className="w-4 h-4" />
+                البودكاست
+              </TabsTrigger>
+              <TabsTrigger value="system" className="flex items-center gap-2 data-[state=active]:bg-background">
+                <Settings className="w-4 h-4" />
+                النظام
+              </TabsTrigger>
+            </TabsList>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="all">الكل ({notifications.length})</TabsTrigger>
-          <TabsTrigger value="unread">غير مقروء ({unreadCount})</TabsTrigger>
-          <TabsTrigger value="episode">الحلقات</TabsTrigger>
-          <TabsTrigger value="recommendation">التوصيات</TabsTrigger>
-          <TabsTrigger value="system">النظام</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value={activeTab} className="space-y-4">
-          {filteredNotifications.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <div className="text-muted-foreground mb-4">
-                  <Bell className="w-12 h-12 mx-auto mb-4" />
-                  <p className="text-lg">لا توجد إشعارات</p>
-                  <p className="text-sm">
-                    {activeTab === "unread" 
-                      ? "جميع الإشعارات مقروءة" 
-                      : "ستظهر الإشعارات الجديدة هنا"
-                    }
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {filteredNotifications.map((notification) => (
-                <Card 
-                  key={notification.id} 
-                  className={`transition-all hover:shadow-md ${
-                    !notification.read ? 'ring-2 ring-primary/20' : ''
-                  } ${getNotificationColor(notification.type)}`}
+            <TabsContent value={activeTab} className="space-y-4">
+              {filteredNotifications.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center py-12"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className="flex items-center justify-center w-10 h-10 bg-background rounded-lg">
-                        {getNotificationIcon(notification.type)}
+                  <Card className="max-w-md mx-auto border-2 border-border/50 bg-background/80 backdrop-blur-sm">
+                    <CardContent className="p-8 text-center">
+                      <div className="mx-auto w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
+                        <Bell className="w-8 h-8 text-muted-foreground" />
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-medium text-foreground">{notification.title}</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
-                            <div className="flex items-center gap-4 mt-2">
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Clock className="w-3 h-3" />
-                                {notification.timestamp}
+                      <h3 className="text-lg font-semibold mb-2">لا توجد إشعارات</h3>
+                      <p className="text-muted-foreground">
+                        {activeTab === "all" 
+                          ? "لا توجد إشعارات حالياً"
+                          : activeTab === "unread"
+                          ? "جميع الإشعارات مقروءة"
+                          : `لا توجد إشعارات ${activeTab === "episode" ? "للحلقات" : activeTab === "podcast" ? "للبودكاست" : "للنظام"}`
+                        }
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredNotifications.map((notification, index) => (
+                    <motion.div
+                      key={notification.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Card className={`border-2 ${getNotificationColor(notification.type)} hover:shadow-lg transition-all duration-300 ${!notification.read ? 'ring-2 ring-primary/20' : ''}`}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start gap-4 flex-1">
+                              <div className="w-10 h-10 bg-background/80 rounded-lg flex items-center justify-center border border-border/50">
+                                {getNotificationIcon(notification.type)}
                               </div>
-                              {!notification.read && (
-                                <Badge variant="secondary" className="text-xs">جديد</Badge>
-                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="font-semibold text-foreground">{notification.title}</h4>
+                                  {!notification.read && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      جديد
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-muted-foreground text-sm mb-2">{notification.message}</p>
+                                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    {notification.timestamp}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            {notification.action && (
-                              <Button size="sm" variant="outline">
-                                {notification.action}
-                              </Button>
-                            )}
-                            {!notification.read && (
+                            <div className="flex items-center gap-2">
+                              {notification.action && (
+                                <Button size="sm" variant="outline" className="border-2 border-border/50 hover:border-primary/50">
+                                  {notification.action}
+                                </Button>
+                              )}
+                              {!notification.read && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleMarkAsRead(notification.id)}
+                                  className="text-muted-foreground hover:text-foreground"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </Button>
+                              )}
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={() => handleMarkAsRead(notification.id)}
-                                className="h-8 w-8 p-0"
+                                onClick={() => handleDeleteNotification(notification.id)}
+                                className="text-muted-foreground hover:text-destructive"
                               >
-                                <Check className="w-4 h-4" />
+                                <X className="w-4 h-4" />
                               </Button>
-                            )}
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleDeleteNotification(notification.id)}
-                              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                            >
-                              <X className="w-4 h-4" />
-                            </Button>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </motion.div>
+      </div>
     </div>
   )
 } 

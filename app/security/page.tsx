@@ -16,8 +16,10 @@ import {
     Key,
     Lock,
     Shield,
-    Smartphone
+    Smartphone,
+    Sparkles
 } from "lucide-react"
+import { motion } from "motion/react"
 import { useState } from "react"
 
 interface SecuritySession {
@@ -99,314 +101,328 @@ export default function SecurityPage() {
   const newPasswordStrength = passwordStrength(newPassword)
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">الأمان</h1>
-          <p className="text-muted-foreground">
-            إدارة إعدادات الأمان والخصوصية لحسابك
-          </p>
-        </div>
-        <Badge variant="secondary" className="flex items-center gap-1">
-          <Shield className="w-4 h-4" />
-          الحساب محمي
-        </Badge>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Enhanced Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-6"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 blur-3xl rounded-full" />
+            <div className="relative">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Shield className="w-8 h-8 text-primary" />
+                <h1 className="text-3xl lg:text-4xl font-bold text-foreground">
+                  الأمان
+                </h1>
+              </div>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <span className="text-sm text-muted-foreground">إدارة إعدادات الأمان والخصوصية لحسابك</span>
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
-      {/* Security Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">المصادقة الثنائية</p>
-                <p className="text-xl font-bold text-green-600">مفعلة</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Smartphone className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">الأجهزة النشطة</p>
-                <p className="text-xl font-bold">{sessions.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">آخر تسجيل دخول</p>
-                <p className="text-xl font-bold">اليوم</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Enhanced Security Status */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-center justify-center"
+        >
+          <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-base border-2 border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800">
+            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+            الحساب محمي
+          </Badge>
+        </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Security Settings */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lock className="w-5 h-5" />
-                إعدادات الأمان
-              </CardTitle>
-              <CardDescription>
-                تحكم في إعدادات الأمان الأساسية
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>المصادقة الثنائية</Label>
-                  <p className="text-sm text-muted-foreground">
-                    طبقة أمان إضافية لحسابك
-                  </p>
+        {/* Enhanced Security Overview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          <Card className="border-2 border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800 hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <Switch
-                  checked={securitySettings.twoFactorAuth}
-                  onCheckedChange={(checked) => handleSettingChange("twoFactorAuth", checked)}
-                />
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>تنبيهات تسجيل الدخول</Label>
-                  <p className="text-sm text-muted-foreground">
-                    إشعار عند تسجيل الدخول من جهاز جديد
-                  </p>
+                <div>
+                  <p className="text-sm text-muted-foreground">المصادقة الثنائية</p>
+                  <p className="text-xl font-bold text-green-600 dark:text-green-400">مفعلة</p>
                 </div>
-                <Switch
-                  checked={securitySettings.loginAlerts}
-                  onCheckedChange={(checked) => handleSettingChange("loginAlerts", checked)}
-                />
-              </div>
-              
-              <Separator />
-              
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>إدارة الأجهزة</Label>
-                  <p className="text-sm text-muted-foreground">
-                    مراجعة وإدارة الأجهزة المتصلة
-                  </p>
-                </div>
-                <Switch
-                  checked={securitySettings.deviceManagement}
-                  onCheckedChange={(checked) => handleSettingChange("deviceManagement", checked)}
-                />
               </div>
             </CardContent>
           </Card>
-
-          {/* Change Password */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Key className="w-5 h-5" />
-                تغيير كلمة المرور
-              </CardTitle>
-              <CardDescription>
-                تحديث كلمة المرور الخاصة بك
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">كلمة المرور الحالية</Label>
-                <div className="relative">
-                  <Input
-                    id="current-password"
-                    type={showPassword ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
+          <Card className="border-2 border-blue-200 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-800 hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                  <Smartphone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">الأجهزة النشطة</p>
+                  <p className="text-xl font-bold">{sessions.length}</p>
                 </div>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="new-password">كلمة المرور الجديدة</Label>
-                <div className="relative">
-                  <Input
-                    id="new-password"
-                    type={showNewPassword ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                  >
-                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
+            </CardContent>
+          </Card>
+          <Card className="border-2 border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20 dark:border-yellow-800 hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
-                {newPassword && (
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-muted-foreground">قوة كلمة المرور:</span>
-                    <span className={`text-xs font-medium ${newPasswordStrength.color}`}>
-                      {newPasswordStrength.label}
-                    </span>
+                <div>
+                  <p className="text-sm text-muted-foreground">آخر تسجيل دخول</p>
+                  <p className="text-xl font-bold">اليوم</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+        >
+          {/* Enhanced Security Settings */}
+          <div className="space-y-6">
+            <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lock className="w-5 h-5 text-primary" />
+                  إعدادات الأمان
+                </CardTitle>
+                <CardDescription>
+                  تحكم في إعدادات الأمان الأساسية
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/30 transition-colors">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-medium">المصادقة الثنائية</Label>
+                    <p className="text-sm text-muted-foreground">
+                      طبقة أمان إضافية لحسابك
+                    </p>
                   </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">تأكيد كلمة المرور الجديدة</Label>
-                <div className="relative">
-                  <Input
-                    id="confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pr-10"
+                  <Switch
+                    checked={securitySettings.twoFactorAuth}
+                    onCheckedChange={(checked) => handleSettingChange("twoFactorAuth", checked)}
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
                 </div>
-                {confirmPassword && newPassword !== confirmPassword && (
-                  <p className="text-xs text-red-500">كلمات المرور غير متطابقة</p>
-                )}
-              </div>
+                
+                <Separator />
+                
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/30 transition-colors">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-medium">تنبيهات تسجيل الدخول</Label>
+                    <p className="text-sm text-muted-foreground">
+                      إشعار عند تسجيل الدخول من جهاز جديد
+                    </p>
+                  </div>
+                  <Switch
+                    checked={securitySettings.loginAlerts}
+                    onCheckedChange={(checked) => handleSettingChange("loginAlerts", checked)}
+                  />
+                </div>
+                
+                <Separator />
+                
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 hover:bg-muted/30 transition-colors">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-medium">إدارة الأجهزة</Label>
+                    <p className="text-sm text-muted-foreground">
+                      مراقبة وإدارة الأجهزة المتصلة
+                    </p>
+                  </div>
+                  <Switch
+                    checked={securitySettings.deviceManagement}
+                    onCheckedChange={(checked) => handleSettingChange("deviceManagement", checked)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-              <Button className="w-full" disabled={!currentPassword || !newPassword || newPassword !== confirmPassword}>
-                تحديث كلمة المرور
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Enhanced Password Change */}
+            <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Key className="w-5 h-5 text-primary" />
+                  تغيير كلمة المرور
+                </CardTitle>
+                <CardDescription>
+                  تحديث كلمة المرور الخاصة بك
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <Label htmlFor="current-password" className="text-base font-medium">كلمة المرور الحالية</Label>
+                  <div className="relative">
+                    <Input
+                      id="current-password"
+                      type={showPassword ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="pr-12 h-12 border-2 border-border/50 focus:border-primary/50 transition-colors"
+                      placeholder="أدخل كلمة المرور الحالية"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                </div>
 
-        {/* Active Sessions */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Smartphone className="w-5 h-5" />
-                الجلسات النشطة
-              </CardTitle>
-              <CardDescription>
-                إدارة الأجهزة المتصلة بحسابك
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {sessions.map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-                      <Smartphone className="w-5 h-5 text-muted-foreground" />
+                <div className="space-y-3">
+                  <Label htmlFor="new-password" className="text-base font-medium">كلمة المرور الجديدة</Label>
+                  <div className="relative">
+                    <Input
+                      id="new-password"
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="pr-12 h-12 border-2 border-border/50 focus:border-primary/50 transition-colors"
+                      placeholder="أدخل كلمة المرور الجديدة"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                  {newPassword && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">قوة كلمة المرور:</span>
+                      <span className={`text-sm font-medium ${newPasswordStrength.color}`}>
+                        {newPasswordStrength.label}
+                      </span>
                     </div>
-                    <div>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="confirm-password" className="text-base font-medium">تأكيد كلمة المرور</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="pr-12 h-12 border-2 border-border/50 focus:border-primary/50 transition-colors"
+                      placeholder="أعد إدخال كلمة المرور الجديدة"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200 rounded-2xl px-6 py-3">
+                  <Key className="w-5 h-5 ml-2" />
+                  تحديث كلمة المرور
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Enhanced Active Sessions */}
+          <div className="space-y-6">
+            <Card className="border-2 border-border/50 bg-background/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-primary" />
+                  الجلسات النشطة
+                </CardTitle>
+                <CardDescription>
+                  إدارة الأجهزة المتصلة بحسابك
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {sessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className={`p-4 rounded-lg border-2 transition-all duration-300 ${
+                      session.current
+                        ? "border-primary/50 bg-primary/5"
+                        : session.trusted
+                        ? "border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800"
+                        : "border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20 dark:border-yellow-800"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold text-foreground">{session.device}</h4>
+                          {session.current && (
+                            <Badge variant="secondary" className="text-xs">
+                              الحالي
+                            </Badge>
+                          )}
+                          {session.trusted && !session.current && (
+                            <Badge variant="outline" className="text-xs border-green-200 text-green-700 dark:border-green-800 dark:text-green-400">
+                              موثوق
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-1">{session.location}</p>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Clock className="w-3 h-3" />
+                          {session.lastActive}
+                        </div>
+                      </div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-sm">{session.device}</h4>
-                        {session.current && (
-                          <Badge variant="secondary" className="text-xs">الحالي</Badge>
+                        {!session.trusted && !session.current && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleTrustSession(session.id)}
+                            className="border-2 border-border/50 hover:border-green-500 text-green-600 hover:text-green-600"
+                          >
+                            ثقة
+                          </Button>
                         )}
-                        {session.trusted && (
-                          <Badge variant="outline" className="text-xs">موثوق</Badge>
+                        {!session.current && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleRevokeSession(session.id)}
+                            className="border-2 border-border/50 hover:border-destructive/50 text-destructive hover:text-destructive"
+                          >
+                            إلغاء
+                          </Button>
                         )}
-                      </div>
-                      <p className="text-xs text-muted-foreground">{session.location}</p>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Clock className="w-3 h-3" />
-                        {session.lastActive}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {!session.trusted && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleTrustSession(session.id)}
-                        className="h-8 px-2"
-                      >
-                        ثقة
-                      </Button>
-                    )}
-                    {!session.current && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleRevokeSession(session.id)}
-                        className="h-8 px-2 text-destructive hover:text-destructive"
-                      >
-                        إلغاء
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Security Log */}
-          <Card>
-            <CardHeader>
-              <CardTitle>سجل الأمان</CardTitle>
-              <CardDescription>
-                آخر الأنشطة الأمنية على حسابك
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-                <span>تسجيل دخول ناجح من MacBook Pro</span>
-                <span className="text-muted-foreground text-xs">منذ 5 دقائق</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                <span>تم تفعيل المصادقة الثنائية</span>
-                <span className="text-muted-foreground text-xs">منذ يوم</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                <span>محاولة تسجيل دخول فاشلة من دبي</span>
-                <span className="text-muted-foreground text-xs">منذ 3 أيام</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-                <span>تم تغيير كلمة المرور</span>
-                <span className="text-muted-foreground text-xs">منذ أسبوع</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

@@ -102,8 +102,16 @@ export default function HomePage() {
                       placeholder="ابحث عن بودكاست أو حلقة..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pr-14 pl-4 py-6 text-lg bg-background/80 backdrop-blur-sm border-2 border-border/50 focus:border-primary/50 transition-all duration-300 rounded-2xl shadow-lg"
+                      className="pr-14 pl-20 py-6 text-lg bg-background/80 backdrop-blur-sm border-2 border-border/50 focus:border-primary/50 transition-all duration-300 rounded-2xl shadow-lg"
                     />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      className="absolute text-muted-foreground left-2 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-xl hover:bg-accent"
+                    >
+                      <Mic className="w-4 h-4" />
+                    </Button>
                     <Button
                       type="submit"
                       size="icon"
@@ -114,23 +122,6 @@ export default function HomePage() {
                     </Button>
                   </div>
                 </form>
-              </motion.div>
-
-              {/* Voice Search Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="mb-8 lg:mb-12"
-              >
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full px-6 py-3 border-2 border-border/50 hover:border-primary/50 transition-all duration-300"
-                >
-                  <Mic className="w-4 h-4 mr-2" />
-                  البحث الصوتي
-                </Button>
               </motion.div>
             </motion.div>
 
