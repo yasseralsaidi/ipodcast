@@ -16,8 +16,8 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
 })
 
 export const metadata: Metadata = {
-  title: 'iPodcast Search',
-  description: 'Search and discover podcasts',
+  title: 'اي بودكاست',
+  description: 'استكشف البودكاستات والحلقات معنا',
 }
 
 export default function RootLayout({

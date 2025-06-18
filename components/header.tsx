@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import Link from "next/link"
 import type React from "react"
 import { useState } from "react"
@@ -28,7 +28,7 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
   return (
     <header className="bg-background border-b h-16 flex items-center justify-between px-6 fixed top-0 right-64 left-0 z-10">
       {/* Navigation Arrows */}
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-accent">
           <ChevronRight className="w-5 h-5" />
           <span className="sr-only">السابق</span>
@@ -37,7 +37,7 @@ export function Header({ onSearch, searchTerm }: HeaderProps) {
           <ChevronLeft className="w-5 h-5" />
           <span className="sr-only">التالي</span>
         </Button>
-      </div>
+      </div> */}
 
       {/* Search Bar */}
       <div className="flex-1 max-w-2xl mx-8">
