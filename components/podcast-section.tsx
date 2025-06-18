@@ -50,7 +50,7 @@ export function PodcastSection() {
       <section className="py-8 lg:py-16 bg-background">
         <div className="container px-4 md:px-6">
           <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4">
+            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4">
               البودكاست المميزة
             </h2>
             <p className="text-muted-foreground max-w-[700px] mx-auto px-4">
@@ -87,7 +87,7 @@ export function PodcastSection() {
       <section className="py-8 lg:py-16 bg-background">
         <div className="container px-4 md:px-6">
           <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4 text-destructive">
+            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4 text-destructive">
               {error}
             </h2>
             <Button 
@@ -112,7 +112,7 @@ export function PodcastSection() {
           className="text-center mb-8 lg:mb-12"
         >
           <div className="flex items-center justify-center mb-6 lg:mb-8 relative">
-            <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
+            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
               البودكاست المميزة
             </h2>
             <TooltipProvider>
