@@ -1,5 +1,6 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -10,7 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { usePodcasts } from "@/hooks/use-podcasts"
-import { Clock, Play, RefreshCw } from "lucide-react"
+import { Clock, Headphones, Play, RefreshCw, TrendingUp } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import { useRouter } from "next/navigation"
 
@@ -47,20 +48,27 @@ export function PodcastSection() {
 
   if (loading && podcasts.length === 0) {
     return (
-      <section className="py-8 lg:py-16 bg-background">
-        <div className="container px-4 md:px-6">
-          <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4">
-              البودكاست المميزة
-            </h2>
-            <p className="text-muted-foreground max-w-[700px] mx-auto px-4">
+      <section className="py-16 lg:py-24 bg-gradient-to-b from-background to-muted/10">
+        <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12 lg:mb-16"
+          >
+            <div className="flex items-center gap-2 justify-center mb-6">
+              <Headphones className="w-8 h-8 text-primary ml-3" />
+              <h2 className="text-3xl lg:text-4xl font-bold tracking-tight">
+                البودكاست المميزة
+              </h2>
+            </div>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               اكتشف مجموعة متنوعة من البودكاست المميزة في مختلف المجالات
             </p>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-            {Array.from({ length: 6 }, (_, i) => (
-              <Card key={`podcast-skeleton-${Math.random().toString(36).substr(2, 9)}-${i}`} className="h-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            {Array.from({ length: 8 }, (_, i) => (
+              <Card key={`podcast-skeleton-${Math.random().toString(36).substr(2, 9)}-${i}`} className="h-full border-2 border-border/50 bg-background/80 backdrop-blur-sm">
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
                   <Skeleton className="w-full h-full" />
                 </div>
@@ -72,7 +80,7 @@ export function PodcastSection() {
                   <Skeleton className="h-4 w-20" />
                 </CardContent>
                 <CardFooter className="p-4 lg:p-6 pt-0">
-                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full rounded-lg" />
                 </CardFooter>
               </Card>
             ))}
@@ -84,35 +92,47 @@ export function PodcastSection() {
 
   if (error && podcasts.length === 0) {
     return (
-      <section className="py-8 lg:py-16 bg-background">
-        <div className="container px-4 md:px-6">
-          <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4 text-destructive">
-              {error}
-            </h2>
+      <section className="py-16 lg:py-24 bg-gradient-to-b from-background to-muted/10">
+        <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <div className="mb-8">
+              <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-destructive mb-4">
+                حدث خطأ في تحميل البودكاست
+              </h2>
+              <p className="text-muted-foreground text-lg mb-6">
+                {error}
+              </p>
+            </div>
             <Button 
               variant="outline" 
+              size="lg"
               onClick={handleRefresh}
-              className="mt-4"
+              className="px-8 py-3"
             >
+              <RefreshCw className="w-4 h-4 mr-2" />
               حاول مرة أخرى
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
     )
   }
 
   return (
-    <section className="py-8 lg:py-16 bg-background">
-      <div className="container px-4 md:px-6">
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-background to-muted/10">
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8 lg:mb-12"
+          className="text-center mb-12 lg:mb-16"
         >
-          <div className="flex items-center justify-center mb-6 lg:mb-8 relative">
-            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl">
+          <div className="flex items-center justify-center mb-6 gap-2">
+            <Headphones className="w-8 h-8 text-primary mr-3" />
+            <h2 className="text-3xl lg:text-4xl font-bold tracking-tight">
               البودكاست المميزة
             </h2>
             <TooltipProvider>
@@ -122,7 +142,7 @@ export function PodcastSection() {
                     variant="outline"
                     size="icon"
                     onClick={handleRefresh}
-                    className="h-8 w-8 lg:h-10 lg:w-10 absolute right-0"
+                    className="h-10 w-10 ml-4 border-2 border-border/50 hover:border-primary/50 transition-all duration-300"
                     disabled={isRefetching}
                   >
                     <motion.div
@@ -130,7 +150,7 @@ export function PodcastSection() {
                       animate={isRefetching ? { rotate: 360 } : {}}
                       transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                     >
-                      <RefreshCw className="h-3 w-3 lg:h-4 lg:w-4" />
+                      <RefreshCw className="h-4 w-4" />
                     </motion.div>
                   </Button>
                 </TooltipTrigger>
@@ -140,7 +160,7 @@ export function PodcastSection() {
               </Tooltip>
             </TooltipProvider>
           </div>
-          <p className="text-muted-foreground max-w-[700px] mx-auto px-4">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             اكتشف مجموعة متنوعة من البودكاست المميزة في مختلف المجالات
           </p>
         </motion.div>
@@ -152,7 +172,7 @@ export function PodcastSection() {
             initial="hidden"
             animate="show"
             exit="hidden"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
           >
             {podcasts.map((podcast) => (
               <motion.div
@@ -161,19 +181,30 @@ export function PodcastSection() {
                 layout
               >
                 <Card 
-                  className="group h-full transition-all duration-300 hover:shadow-lg cursor-pointer"
+                  className="group h-full transition-all duration-300 hover:shadow-xl cursor-pointer border-2 border-border/50 hover:border-primary/50 bg-background/80 backdrop-blur-sm overflow-hidden"
                   onClick={() => handlePodcastClick(podcast.collectionId)}
                 >
-                  <div className="aspect-video relative overflow-hidden rounded-t-lg">
+                  <div className="aspect-video relative overflow-hidden">
                     <img
                       src={podcast.artworkUrl600}
                       alt={podcast.collectionName}
-                      className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute top-3 right-3">
+                      <Badge variant="secondary" className="text-xs bg-background/80 backdrop-blur-sm">
+                        <TrendingUp className="w-3 h-3 mr-1" />
+                        مميز
+                      </Badge>
+                    </div>
                   </div>
                   <CardHeader className="p-4 lg:p-6">
-                    <CardTitle className="text-lg lg:text-xl line-clamp-2">{podcast.collectionName}</CardTitle>
-                    <CardDescription className="text-sm lg:text-base line-clamp-1">{podcast.artistName}</CardDescription>
+                    <CardTitle className="text-lg lg:text-xl line-clamp-2 group-hover:text-primary transition-colors">
+                      {podcast.collectionName}
+                    </CardTitle>
+                    <CardDescription className="text-sm lg:text-base line-clamp-1 text-muted-foreground">
+                      {podcast.artistName}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="p-4 lg:p-6 pt-0">
                     <div className="flex items-center text-xs lg:text-sm text-muted-foreground">
@@ -183,14 +214,14 @@ export function PodcastSection() {
                   </CardContent>
                   <CardFooter className="p-4 lg:p-6 pt-0">
                     <Button 
-                      className="w-full group-hover:bg-primary/90 text-sm lg:text-base" 
+                      className="w-full group-hover:bg-primary/90 transition-all duration-300 text-sm lg:text-base rounded-lg" 
                       variant="default"
                       onClick={(e) => {
                         e.stopPropagation()
                         handlePodcastClick(podcast.collectionId)
                       }}
                     >
-                      <Play className="w-3 h-3 lg:w-4 lg:h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                      <Play className="w-3 h-3 lg:w-4 lg:h-4 mr-2 transition-transform group-hover:translate-x-1" />
                       استمع الآن
                     </Button>
                   </CardFooter>
@@ -198,18 +229,6 @@ export function PodcastSection() {
               </motion.div>
             ))}
           </motion.div>
-          
-          {!loading && podcasts.length > 0 && podcasts.length < 6 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center mt-8"
-            >
-              <p className="text-muted-foreground">
-                تم العثور على {podcasts.length} بودكاست. جرب تحديث الصفحة للحصول على المزيد.
-              </p>
-            </motion.div>
-          )}
         </AnimatePresence>
       </div>
     </section>
