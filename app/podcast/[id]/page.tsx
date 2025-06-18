@@ -3,6 +3,7 @@
 import { api } from "@/app/trpc/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { createRetryConfig } from "@/hooks/use-podcasts"
 import { AlertCircle, Heart, Play, RefreshCw, Share2 } from "lucide-react"
 import { motion } from "motion/react"
@@ -34,10 +35,73 @@ export default function PodcastDetails() {
 
   if (loading) {
     return (
-      <div className="container py-8 lg:py-12 text-center">
-        <div className="flex flex-col items-center gap-4">
-          <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-          <h1 className="text-xl lg:text-2xl font-bold">جاري التحميل...</h1>
+      <div className="container py-6 lg:py-12">
+        <div className="max-w-6xl mx-auto">
+          {/* Hero Section Skeleton */}
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 mb-8 lg:mb-12">
+            {/* Podcast Artwork Skeleton */}
+            <div className="lg:col-span-1 flex justify-center lg:justify-start">
+              <Skeleton className="aspect-square w-64 lg:w-full max-w-sm rounded-2xl" />
+            </div>
+
+            {/* Podcast Info Skeleton */}
+            <div className="lg:col-span-2 space-y-4 lg:space-y-6">
+              <div>
+                <Skeleton className="h-8 lg:h-10 w-3/4 mb-2" />
+                <Skeleton className="h-6 lg:h-7 w-1/2" />
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-12 w-32" />
+                <Skeleton className="h-12 w-32" />
+                <Skeleton className="h-12 w-24" />
+              </div>
+
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                {Array.from({ length: 4 }, (_, i) => (
+                  <div key={`info-skeleton-${Date.now()}-${i}`}>
+                    <Skeleton className="h-4 w-16 mb-1" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Details Skeleton */}
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <Skeleton className="h-6 w-40" />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {Array.from({ length: 4 }, (_, i) => (
+                    <div key={`detail-skeleton-${Date.now()}-${i}`}>
+                      <Skeleton className="h-4 w-24 mb-2" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader>
+                  <Skeleton className="h-6 w-32" />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {Array.from({ length: 3 }, (_, i) => (
+                    <div key={`additional-skeleton-${Date.now()}-${i}`}>
+                      <Skeleton className="h-4 w-16 mb-2" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     )

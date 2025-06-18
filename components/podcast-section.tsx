@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -50,8 +51,31 @@ export function PodcastSection() {
         <div className="container px-4 md:px-6">
           <div className="text-center mb-8 lg:mb-12">
             <h2 className="text-2xl lg:text-3xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl mb-4">
-              جاري التحميل...
+              البودكاست المميزة
             </h2>
+            <p className="text-muted-foreground max-w-[700px] mx-auto px-4">
+              اكتشف مجموعة متنوعة من البودكاست المميزة في مختلف المجالات
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+            {Array.from({ length: 6 }, (_, i) => (
+              <Card key={`podcast-skeleton-${Date.now()}-${i}`} className="h-full">
+                <div className="aspect-video relative overflow-hidden rounded-t-lg">
+                  <Skeleton className="w-full h-full" />
+                </div>
+                <CardHeader className="p-4 lg:p-6">
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2" />
+                </CardHeader>
+                <CardContent className="p-4 lg:p-6 pt-0">
+                  <Skeleton className="h-4 w-20" />
+                </CardContent>
+                <CardFooter className="p-4 lg:p-6 pt-0">
+                  <Skeleton className="h-10 w-full" />
+                </CardFooter>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
