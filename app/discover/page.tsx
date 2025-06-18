@@ -55,10 +55,26 @@ export default function DiscoverPage() {
               <Button
                 key={category.name}
                 variant="outline"
-                className="h-20 lg:h-24 flex flex-col items-center justify-center gap-2 hover:scale-105 transition-all duration-300 hover:bg-accent hover:text-accent-foreground"
+                className="group relative h-20 lg:h-24 flex flex-col items-center justify-center gap-2 transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-primary/20 overflow-hidden border-2 hover:border-primary"
               >
-                <span className="text-2xl">{category.icon}</span>
-                <span className="text-xs lg:text-sm font-medium">{category.name}</span>
+                {/* Background on Hover */}
+                <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Animated Border */}
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-primary-foreground/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                
+                {/* Content */}
+                <div className="relative z-10 flex flex-col items-center justify-center gap-2">
+                  <span className="text-2xl group-hover:scale-125 transition-transform duration-300 group-hover:drop-shadow-lg">
+                    {category.icon}
+                  </span>
+                  <span className="text-xs lg:text-sm font-medium text-foreground group-hover:text-primary-foreground transition-colors duration-300">
+                    {category.name}
+                  </span>
+                </div>
+                
+                {/* Subtle Glow Effect */}
+                <div className="absolute inset-0 rounded-lg bg-primary opacity-0 group-hover:opacity-10 blur-xl transition-opacity duration-500" />
               </Button>
             ))}
           </div>

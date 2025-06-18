@@ -14,7 +14,7 @@ export default function HomePage() {
     <div className="p-4 lg:p-6">
       <div className="text-center py-12 lg:py-20">
         <h1 className="text-2xl lg:text-4xl font-bold text-foreground mb-4 lg:mb-6">
-          مرحباً بك في بحث البودكاست
+          مرحباً بك في اي بودكاست
         </h1>
         <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 lg:mb-8 px-4">
           ابحث في أكثر من 70 مليون بودكاست وحلقة باستخدام شريط البحث أعلاه.
