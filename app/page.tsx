@@ -26,7 +26,7 @@ export default function HomePage() {
             عمليات البحث الشائعة
           </h2>
           <div className="flex flex-wrap justify-center gap-2 lg:gap-3 px-4">
-            {["فنجان", "جو روغان", "سيريال", "هذا الحياة الأمريكية", "راديولاب", "محادثات تيد"].map((term) => (
+            {["فنجان", "سايوير", "أشياء غيرتنا", "الفجر", "بدون ورق", "محادثات تيد"].map((term) => (
               <button
                 key={term}
                 type="button"
