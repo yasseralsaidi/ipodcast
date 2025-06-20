@@ -1,12 +1,11 @@
+import { db } from "@/app/server/db";
 import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import { prismaAdapter } from "better-auth/adapters/prisma";
 
 export const auth = betterAuth({
-  database: pool,
+  database: prismaAdapter(db, {
+		provider: "postgresql",
+	}),
   emailAndPassword: {
     enabled: true
   },

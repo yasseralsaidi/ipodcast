@@ -2,60 +2,120 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model SearchRecord {
-    id         String          @id @default(cuid())
-    searchTerm String
-    createdAt  DateTime        @default(now())
-    updatedAt  DateTime        @updatedAt
-    results    PodcastResult[]
+  id         String          @id @default(cuid())
+  searchTerm String
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  results    PodcastResult[]
 
-    @@index([searchTerm])
-    @@index([createdAt])
-    @@map("search_records")
+  @@index([searchTerm])
+  @@index([createdAt])
+  @@map("search_records")
 }
 
 model PodcastResult {
-    id                     String       @id @default(cuid())
-    collectionId           Int
-    trackId                Int
-    artistName             String
-    collectionName         String
-    trackName              String
-    collectionViewUrl      String
-    feedUrl                String
-    artworkUrl30           String
-    artworkUrl60           String
-    artworkUrl100          String
-    collectionPrice        Float
-    trackPrice             Float
-    releaseDate            String?
-    collectionExplicitness String
-    trackExplicitness      String
-    trackCount             Int
-    trackTimeMillis        Int?
-    country                String
-    currency               String
-    primaryGenreName       String
-    contentAdvisoryRating  String?
-    artworkUrl600          String
-    genreIds               String[]
-    genres                 String[]
-    searchTerm             String
-    createdAt              DateTime     @default(now())
-    searchRecord           SearchRecord @relation(fields: [searchRecordId], references: [id], onDelete: Cascade)
-    searchRecordId         String
+  id                     String       @id @default(cuid())
+  collectionId           Int
+  trackId                Int
+  artistName             String
+  collectionName         String
+  trackName              String
+  collectionViewUrl      String
+  feedUrl                String
+  artworkUrl30           String
+  artworkUrl60           String
+  artworkUrl100          String
+  collectionPrice        Float
+  trackPrice             Float
+  releaseDate            String?
+  collectionExplicitness String
+  trackExplicitness      String
+  trackCount             Int
+  trackTimeMillis        Int?
+  country                String
+  currency               String
+  primaryGenreName       String
+  contentAdvisoryRating  String?
+  artworkUrl600          String
+  genreIds               String[]
+  genres                 String[]
+  searchTerm             String
+  createdAt              DateTime     @default(now())
+  searchRecord           SearchRecord @relation(fields: [searchRecordId], references: [id], onDelete: Cascade)
+  searchRecordId         String
 
-    @@index([searchTerm])
-    @@index([createdAt])
-    @@index([collectionId])
-    @@index([trackId])
-    @@map("podcast_results")
+  @@index([searchTerm])
+  @@index([createdAt])
+  @@index([collectionId])
+  @@index([trackId])
+  @@map("podcast_results")
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }
