@@ -18,6 +18,18 @@ const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
 export const metadata: Metadata = {
   title: 'اي بودكاست',
   description: 'استكشف البودكاستات والحلقات معنا',
+  icons: {
+    icon: [
+      {
+        url: '/logo.png',
+        type: 'image/png',
+        sizes: '32x32',
+      },
+    ],
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
+  manifest: '/site.webmanifest',
 }
 
 export default function RootLayout({
